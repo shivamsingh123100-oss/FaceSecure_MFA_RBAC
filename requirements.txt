@@ -1,7 +1,8 @@
 Flask
 face-recognition
-Opencv-python
-NumPy
+opencv-python
+numpy
 Pillow
 Werkzeug
 python-dotenv
+gunicorn
