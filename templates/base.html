@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="FaceSecure Multi-Factor Authentication and Role-Based Access Control"
+    >
+
+    <title>
+        {% block title %}FaceSecure{% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/base.css') }}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/components.css') }}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/auth.css') }}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/dashboard.css') }}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/responsive.css') }}"
+    >
+
+    {% block extra_css %}{% endblock %}
+
+</head>
+
+<body>
+
+    <div id="page-loader" class="page-loader">
+        <div class="loader-ring"></div>
+    </div>
+
+    <header class="site-header">
+
+        <div class="container navbar">
+
+            <a
+                href="{{ url_for('index') }}"
+                class="brand"
+            >
+                <span class="brand-mark">F</span>
+                <span>FaceSecure</span>
+            </a>
+
+            <nav class="main-nav">
+
+                <a href="{{ url_for('index') }}">
+                    Home
+                </a>
+
+                {% if logged_in %}
+
+                    {% if current_role == "ADMIN" %}
+
+                        <a href="{{ url_for('admin_dashboard') }}">
+                            Dashboard
+                        </a>
+
+                        <a href="{{ url_for('admin_users') }}">
+                            Users
+                        </a>
+
+                        <a href="{{ url_for('admin_activity') }}">
+                            Activity
+                        </a>
+
+                        <a href="{{ url_for('admin_profile') }}">
+                            Profile
+                        </a>
+
+                    {% elif current_role == "USER" %}
+
+                        <a href="{{ url_for('user_dashboard') }}">
+                            Dashboard
+                        </a>
+
+                        <a href="{{ url_for('user_profile') }}">
+                            Profile
+                        </a>
+
+                    {% endif %}
+
+                    <a
+                        href="{{ url_for('logout') }}"
+                        class="nav-button"
+                    >
+                        Logout
+                    </a>
+
+                {% else %}
+
+                    <a href="{{ url_for('access') }}">
+                        Login
+                    </a>
+
+                {% endif %}
+
+            </nav>
+
+            <button
+                type="button"
+                class="mobile-menu-button"
+                id="mobileMenuButton"
+                aria-label="Open navigation"
+            >
+                ☰
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <main>
+
+        {% with messages = get_flashed_messages(
+            with_categories=true
+        ) %}
+
+            {% if messages %}
+
+                <div class="flash-container container">
+
+                    {% for category, message in messages %}
+
+                        <div
+                            class="flash-message flash-{{ category }}"
+                            data-auto-dismiss="true"
+                        >
+
+                            <span>
+                                {{ message }}
+                            </span>
+
+                            <button
+                                type="button"
+                                class="flash-close"
+                                aria-label="Close"
+                            >
+                                ×
+                            </button>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        {% block content %}{% endblock %}
+
+    </main>
+
+
+    <footer class="site-footer">
+
+        <div class="container footer-content">
+
+            <div>
+                <strong>FaceSecure</strong>
+                <p>
+                    Multi-Factor Authentication & RBAC
+                </p>
+            </div>
+
+            <div>
+                <span>
+                    Secure Access Control System
+                </span>
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <script
+        src="{{ url_for('static', filename='js/main.js') }}"
+    ></script>
+
+    {% block extra_js %}{% endblock %}
+
+</body>
+</html>

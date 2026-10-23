@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}
+    User Dashboard | FaceSecure
+{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page">
+
+    <div class="container">
+
+        <div class="dashboard-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    USER DASHBOARD
+                </span>
+
+                <h1>
+                    Welcome, {{ user["full_name"] }}
+                </h1>
+
+                <p>
+                    Your account is authenticated and protected
+                    by multi-factor authentication.
+                </p>
+
+            </div>
+
+            <div class="dashboard-status">
+                <span class="status-dot"></span>
+                VERIFIED
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-grid">
+
+            <div class="dashboard-card">
+
+                <div class="dashboard-card-icon">
+                    U
+                </div>
+
+                <span>
+                    ACCOUNT
+                </span>
+
+                <h3>
+                    {{ user["username"] }}
+                </h3>
+
+                <p>
+                    Registered user account
+                </p>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <div class="dashboard-card-icon">
+                    F
+                </div>
+
+                <span>
+                    FACE
+                </span>
+
+                <h3>
+                    Registered
+                </h3>
+
+                <p>
+                    Biometric authentication enabled
+                </p>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <div class="dashboard-card-icon">
+                    R
+                </div>
+
+                <span>
+                    ROLE
+                </span>
+
+                <h3>
+                    USER
+                </h3>
+
+                <p>
+                    Role-based access applied
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="content-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <span class="eyebrow">
+                        ACCESS
+                    </span>
+
+                    <h2>
+                        Account information
+                    </h2>
+
+                </div>
+
+                <a
+                    href="{{ url_for('user_profile') }}"
+                    class="button button-secondary"
+                >
+                    View Profile
+                </a>
+
+            </div>
+
+
+            <div class="info-grid">
+
+                <div class="info-item">
+
+                    <span>
+                        Full Name
+                    </span>
+
+                    <strong>
+                        {{ user["full_name"] }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span>
+                        Username
+                    </span>
+
+                    <strong>
+                        {{ user["username"] }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span>
+                        Role
+                    </span>
+
+                    <strong>
+                        {{ user["role"] }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span>
+                        Status
+                    </span>
+
+                    <strong class="text-success">
+                        {{ user["status"] }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+{% block extra_js %}
+
+<script
+    src="{{ url_for('static', filename='js/dashboard.js') }}"
+></script>
+
+{% endblock %}

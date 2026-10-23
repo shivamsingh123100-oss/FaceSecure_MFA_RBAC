@@ -1,0 +1,422 @@
+{% extends "base.html" %}
+
+{% block title %}
+    FaceSecure | Secure Access
+{% endblock %}
+
+{% block content %}
+
+<section class="home-page">
+
+    <!-- HERO -->
+    <div class="container home-container">
+
+        <div class="home-hero">
+
+            <div class="home-hero-content">
+
+                <div class="home-eyebrow">
+                    <span class="status-dot"></span>
+                    MULTI-FACTOR ACCESS CONTROL
+                </div>
+
+                <h1>
+                    Secure access with
+                    <span>password + face authentication.</span>
+                </h1>
+
+                <p>
+                    FaceSecure combines password authentication,
+                    facial verification and role-based access control
+                    to protect web application access.
+                </p>
+
+                <div class="home-actions">
+
+                    <a
+                        href="{{ url_for('access') }}"
+                        class="home-primary-button"
+                    >
+                        Access Portal
+                        <span>→</span>
+                    </a>
+
+                    <a
+                        href="{{ url_for('user_register') }}"
+                        class="home-secondary-button"
+                    >
+                        Create User Account
+                    </a>
+
+                </div>
+
+                <div class="home-status">
+
+                    <span class="status-dot"></span>
+
+                    <span>
+                        Authentication System
+                    </span>
+
+                    <strong>
+                        Operational
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- SECURITY PREVIEW -->
+            <div class="security-preview">
+
+                <div class="preview-top">
+
+                    <div>
+                        <span class="preview-label">
+                            FACESECURE
+                        </span>
+
+                        <h2>
+                            Secure Access
+                        </h2>
+                    </div>
+
+                    <div class="preview-shield">
+                        ✓
+                    </div>
+
+                </div>
+
+
+                <div class="preview-line"></div>
+
+
+                <div class="preview-factor">
+
+                    <div class="preview-number">
+                        01
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Password Factor
+                        </strong>
+
+                        <span>
+                            Credential verification
+                        </span>
+
+                    </div>
+
+                    <div class="preview-check">
+                        ✓
+                    </div>
+
+                </div>
+
+
+                <div class="preview-factor">
+
+                    <div class="preview-number">
+                        02
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Face Factor
+                        </strong>
+
+                        <span>
+                            Biometric verification
+                        </span>
+
+                    </div>
+
+                    <div class="preview-check">
+                        ✓
+                    </div>
+
+                </div>
+
+
+                <div class="preview-factor">
+
+                    <div class="preview-number">
+                        03
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Role Authorization
+                        </strong>
+
+                        <span>
+                            USER / ADMIN access
+                        </span>
+
+                    </div>
+
+                    <div class="preview-check">
+                        ✓
+                    </div>
+
+                </div>
+
+
+                <div class="preview-footer">
+
+                    <span class="preview-active-dot"></span>
+
+                    Authentication protected
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SYSTEM INTRODUCTION -->
+
+        <div class="home-section-heading">
+
+            <div class="home-section-label">
+                SYSTEM
+            </div>
+
+            <h2>
+                Authentication built around secure access
+            </h2>
+
+            <p>
+                FaceSecure separates authentication from authorization
+                so that access is controlled according to the account role.
+            </p>
+
+        </div>
+
+
+        <!-- THREE FACTORS -->
+
+        <div class="home-factor-grid">
+
+
+            <article class="home-factor-card">
+
+                <div class="factor-card-number">
+                    01
+                </div>
+
+                <div class="factor-card-icon">
+                    P
+                </div>
+
+                <h3>
+                    Password Authentication
+                </h3>
+
+                <p>
+                    The first authentication factor verifies the
+                    user's registered credentials.
+                </p>
+
+            </article>
+
+
+            <article class="home-factor-card">
+
+                <div class="factor-card-number">
+                    02
+                </div>
+
+                <div class="factor-card-icon">
+                    F
+                </div>
+
+                <h3>
+                    Face Authentication
+                </h3>
+
+                <p>
+                    A captured face is compared with the
+                    registered biometric face.
+                </p>
+
+            </article>
+
+
+            <article class="home-factor-card">
+
+                <div class="factor-card-number">
+                    03
+                </div>
+
+                <div class="factor-card-icon">
+                    R
+                </div>
+
+                <h3>
+                    Role-Based Authorization
+                </h3>
+
+                <p>
+                    Access is controlled according to whether
+                    the authenticated account is a USER or ADMIN.
+                </p>
+
+            </article>
+
+        </div>
+
+
+        <!-- ACCESS STRIP -->
+
+        <div class="home-access-strip">
+
+            <div>
+
+                <span>
+                    SECURE ACCESS
+                </span>
+
+                <h3>
+                    Choose the appropriate account portal.
+                </h3>
+
+            </div>
+
+            <a
+                href="{{ url_for('access') }}"
+                class="home-strip-button"
+            >
+                Continue to Portal
+                <span>→</span>
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="feature-section">
+
+    <div class="container">
+
+        <div class="section-heading">
+
+            <span class="eyebrow">
+                SYSTEM
+            </span>
+
+            <h2>
+                Authentication built around secure access
+            </h2>
+
+            <p>
+                The system separates authentication from
+                authorization so that access is controlled
+                according to the account role.
+            </p>
+
+        </div>
+
+
+        <div class="feature-grid">
+
+            <article class="feature-card">
+
+                <div class="feature-icon">
+                    01
+                </div>
+
+                <h3>
+                    Password Authentication
+                </h3>
+
+                <p>
+                    The first authentication factor verifies
+                    the user's registered credentials.
+                </p>
+
+            </article>
+
+
+            <article class="feature-card">
+
+                <div class="feature-icon">
+                    02
+                </div>
+
+                <h3>
+                    Face Authentication
+                </h3>
+
+                <p>
+                    A captured face is compared with the
+                    registered biometric face.
+                </p>
+
+            </article>
+
+
+            <article class="feature-card">
+
+                <div class="feature-icon">
+                    03
+                </div>
+
+                <h3>
+                    Role-Based Access
+                </h3>
+
+                <p>
+                    Verified accounts receive access according
+                    to their USER or ADMIN role.
+                </p>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="cta-section">
+
+    <div class="container cta-card">
+
+        <div>
+
+            <span class="eyebrow">
+                SECURE PORTAL
+            </span>
+
+            <h2>
+                Ready to authenticate?
+            </h2>
+
+            <p>
+                Choose the appropriate portal to continue.
+            </p>
+
+        </div>
+
+        <a
+            href="{{ url_for('access') }}"
+            class="button button-light"
+        >
+            Continue
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+
+{% block title %}
+Admin Dashboard | FaceSecure
+{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page admin-dashboard-page">
+
+    <div class="container">
+
+        <div class="dashboard-header">
+
+            <div>
+                <span class="eyebrow">ADMIN CONTROL CENTER</span>
+
+                <h1>
+                    Welcome, {{ user["username"] }}
+                </h1>
+
+                <p>
+                    Monitor users, verification status and system activity.
+                </p>
+            </div>
+
+            <div class="dashboard-status admin-status">
+                <span class="status-dot"></span>
+                ADMINISTRATOR
+            </div>
+
+        </div>
+
+
+        <div class="admin-stat-grid">
+
+            <div class="stat-card">
+                <div class="stat-icon">U</div>
+                <span>Total Users</span>
+                <strong>{{ statistics["total_users"] }}</strong>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">P</div>
+                <span>Pending</span>
+                <strong>{{ statistics["pending_users"] }}</strong>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">V</div>
+                <span>Verified</span>
+                <strong>{{ statistics["verified_users"] }}</strong>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">R</div>
+                <span>Rejected</span>
+                <strong>{{ statistics["rejected_users"] }}</strong>
+            </div>
+
+        </div>
+
+
+        <div class="admin-content-grid">
+
+            <div class="content-card">
+
+                <div class="card-header">
+
+                    <div>
+                        <span class="eyebrow">VERIFICATION</span>
+                        <h2>Pending users</h2>
+                    </div>
+
+                    <a
+                        href="{{ url_for('admin_pending_users') }}"
+                        class="button button-secondary"
+                    >
+                        View All
+                    </a>
+
+                </div>
+
+
+                {% if pending_users %}
+
+                <div class="table-wrapper">
+
+                    <table class="data-table">
+
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Username</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                        {% for item in pending_users %}
+
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        {{ item["full_name"] }}
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    {{ item["username"] }}
+                                </td>
+
+                                <td>
+                                    <span class="badge badge-pending">
+                                        {{ item["status"] }}
+                                    </span>
+                                </td>
+
+                                <td>
+
+                                    <a
+                                        href="{{ url_for('admin_users') }}"
+                                        class="table-action"
+                                    >
+                                        Review
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                {% else %}
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">✓</div>
+
+                    <h3>
+                        No pending users
+                    </h3>
+
+                    <p>
+                        There are currently no users waiting for verification.
+                    </p>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="content-card">
+
+                <div class="card-header">
+
+                    <div>
+                        <span class="eyebrow">ACTIVITY</span>
+                        <h2>Recent activity</h2>
+                    </div>
+
+                    <a
+                        href="{{ url_for('admin_activity') }}"
+                        class="button button-secondary"
+                    >
+                        View Activity
+                    </a>
+
+                </div>
+
+
+                {% if recent_activity %}
+
+                <div class="activity-list">
+
+                    {% for activity in recent_activity %}
+
+                    <div class="activity-item">
+
+                        <div class="activity-indicator"></div>
+
+                        <div class="activity-content">
+
+                            <strong>
+                                {{ activity["action"] }}
+                            </strong>
+
+                            <span>
+                                {{ activity["username"] }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+                {% else %}
+
+                <div class="empty-state compact">
+
+                    <p>
+                        No recent activity available.
+                    </p>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <div class="quick-actions">
+
+            <a
+                href="{{ url_for('admin_users') }}"
+                class="quick-action"
+            >
+                <span>U</span>
+                <div>
+                    <strong>Manage Users</strong>
+                    <small>Review registered accounts</small>
+                </div>
+            </a>
+
+            <a
+                href="{{ url_for('admin_pending_users') }}"
+                class="quick-action"
+            >
+                <span>P</span>
+                <div>
+                    <strong>Pending Verification</strong>
+                    <small>Review pending accounts</small>
+                </div>
+            </a>
+
+            <a
+                href="{{ url_for('admin_activity') }}"
+                class="quick-action"
+            >
+                <span>A</span>
+                <div>
+                    <strong>System Activity</strong>
+                    <small>Monitor activity</small>
+                </div>
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+{% block extra_js %}
+
+<script
+    src="{{ url_for('static', filename='js/dashboard.js') }}"
+></script>
+
+{% endblock %}

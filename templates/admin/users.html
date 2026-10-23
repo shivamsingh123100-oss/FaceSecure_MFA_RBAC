@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}
+Manage Users | FaceSecure
+{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page">
+
+    <div class="container">
+
+        <div class="dashboard-header">
+
+            <div>
+                <span class="eyebrow">USER MANAGEMENT</span>
+
+                <h1>
+                    Registered users
+                </h1>
+
+                <p>
+                    Review and manage registered user accounts.
+                </p>
+            </div>
+
+            <a
+                href="{{ url_for('admin_dashboard') }}"
+                class="button button-secondary"
+            >
+                Dashboard
+            </a>
+
+        </div>
+
+
+        <div class="content-card">
+
+            <div class="card-header">
+
+                <div>
+                    <span class="eyebrow">ACCOUNTS</span>
+                    <h2>All registered users</h2>
+                </div>
+
+                <div class="table-search">
+
+                    <input
+                        type="search"
+                        id="userSearch"
+                        placeholder="Search users..."
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table
+                    class="data-table"
+                    id="usersTable"
+                >
+
+                    <thead>
+
+                        <tr>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% for item in users %}
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ item["full_name"] }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                {{ item["username"] }}
+                            </td>
+
+                            <td>
+                                <span class="badge badge-role">
+                                    {{ item["role"] }}
+                                </span>
+                            </td>
+
+                            <td>
+
+                                {% if item["status"] == "VERIFIED" %}
+
+                                    <span class="badge badge-success">
+                                        VERIFIED
+                                    </span>
+
+                                {% elif item["status"] == "REJECTED" %}
+
+                                    <span class="badge badge-danger">
+                                        REJECTED
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge badge-pending">
+                                        PENDING
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                <a
+                                    href="{{ url_for('admin_pending_users') }}"
+                                    class="table-action"
+                                >
+                                    Review
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            {% if not users %}
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    U
+                </div>
+
+                <h3>
+                    No users found
+                </h3>
+
+                <p>
+                    There are no registered users.
+                </p>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script
+    src="{{ url_for('static', filename='js/admin.js') }}"
+></script>
+
+{% endblock %}

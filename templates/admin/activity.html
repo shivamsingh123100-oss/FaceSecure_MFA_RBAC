@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}
+System Activity | FaceSecure
+{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page">
+
+    <div class="container">
+
+        <div class="dashboard-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    SYSTEM MONITORING
+                </span>
+
+                <h1>
+                    Activity monitor
+                </h1>
+
+                <p>
+                    Review recorded authentication and account activity.
+                </p>
+
+            </div>
+
+            <a
+                href="{{ url_for('admin_dashboard') }}"
+                class="button button-secondary"
+            >
+                Dashboard
+            </a>
+
+        </div>
+
+
+        <div class="content-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <span class="eyebrow">
+                        ACTIVITY LOG
+                    </span>
+
+                    <h2>
+                        System activity
+                    </h2>
+
+                </div>
+
+                <div class="table-search">
+
+                    <input
+                        type="search"
+                        id="activitySearch"
+                        placeholder="Search activity..."
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table
+                    class="data-table"
+                    id="activityTable"
+                >
+
+                    <thead>
+
+                        <tr>
+                            <th>User</th>
+                            <th>Action</th>
+                            <th>Status</th>
+                            <th>Time</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% for item in activities %}
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ item["username"] }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                {{ item["action"] }}
+                            </td>
+
+                            <td>
+
+                                {% if item["status"] == "SUCCESS" %}
+
+                                    <span class="badge badge-success">
+                                        SUCCESS
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge badge-danger">
+                                        {{ item["status"] }}
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ item["created_at"] }}
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            {% if not activities %}
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    A
+                </div>
+
+                <h3>
+                    No activity
+                </h3>
+
+                <p>
+                    No system activity has been recorded.
+                </p>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script
+    src="{{ url_for('static', filename='js/admin.js') }}"
+></script>
+
+{% endblock %}

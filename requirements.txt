@@ -1,0 +1,7 @@
+Flask
+face-recognition
+Opencv-python
+NumPy
+Pillow
+Werkzeug
+python-dotenv

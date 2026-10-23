@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}
+Verified Users | FaceSecure
+{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page">
+
+    <div class="container">
+
+        <div class="dashboard-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    VERIFIED ACCOUNTS
+                </span>
+
+                <h1>
+                    Verified users
+                </h1>
+
+                <p>
+                    Users approved for protected system access.
+                </p>
+
+            </div>
+
+            <a
+                href="{{ url_for('admin_dashboard') }}"
+                class="button button-secondary"
+            >
+                Dashboard
+            </a>
+
+        </div>
+
+
+        <div class="content-card">
+
+            <div class="table-wrapper">
+
+                <table class="data-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% for item in users %}
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ item["full_name"] }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                {{ item["username"] }}
+                            </td>
+
+                            <td>
+                                <span class="badge badge-role">
+                                    {{ item["role"] }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="badge badge-success">
+                                    VERIFIED
+                                </span>
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            {% if not users %}
+
+            <div class="empty-state">
+
+                <h3>
+                    No verified users
+                </h3>
+
+                <p>
+                    No verified accounts are currently available.
+                </p>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

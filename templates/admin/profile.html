@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}
+Admin Profile | FaceSecure
+{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page">
+
+    <div class="container narrow-container">
+
+        <div class="dashboard-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    ADMINISTRATOR PROFILE
+                </span>
+
+                <h1>
+                    Admin profile
+                </h1>
+
+                <p>
+                    Administrator account information.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="content-card profile-card admin-profile-card">
+
+            <div class="profile-avatar admin-avatar">
+                {{ user["full_name"][0]|upper }}
+            </div>
+
+            <div class="admin-badge">
+                ADMINISTRATOR
+            </div>
+
+            <h2>
+                {{ user["full_name"] }}
+            </h2>
+
+            <span class="profile-role">
+                {{ user["role"] }}
+            </span>
+
+
+            <div class="profile-details">
+
+                <div class="info-item">
+
+                    <span>
+                        Username
+                    </span>
+
+                    <strong>
+                        {{ user["username"] }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span>
+                        Role
+                    </span>
+
+                    <strong>
+                        {{ user["role"] }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span>
+                        Account Status
+                    </span>
+
+                    <strong class="text-success">
+                        {{ user["status"] }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span>
+                        Face Authentication
+                    </span>
+
+                    <strong>
+                        Registered
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <a
+                href="{{ url_for('admin_dashboard') }}"
+                class="button button-dark"
+            >
+                Back to Dashboard
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

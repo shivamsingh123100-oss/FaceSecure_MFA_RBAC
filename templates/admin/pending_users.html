@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}
+Pending Verification | FaceSecure
+{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page">
+
+    <div class="container">
+
+        <div class="dashboard-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    ADMIN VERIFICATION
+                </span>
+
+                <h1>
+                    Pending users
+                </h1>
+
+                <p>
+                    Review accounts awaiting administrator verification.
+                </p>
+
+            </div>
+
+            <a
+                href="{{ url_for('admin_dashboard') }}"
+                class="button button-secondary"
+            >
+                Dashboard
+            </a>
+
+        </div>
+
+
+        <div class="verification-grid">
+
+        {% if users %}
+
+            {% for item in users %}
+
+            <article class="verification-card">
+
+                <div class="verification-card-header">
+
+                    <div class="profile-avatar small">
+                        {{ item["full_name"][0]|upper }}
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            {{ item["full_name"] }}
+                        </h3>
+
+                        <span>
+                            @{{ item["username"] }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="verification-details">
+
+                    <div>
+                        <span>Role</span>
+                        <strong>{{ item["role"] }}</strong>
+                    </div>
+
+                    <div>
+                        <span>Status</span>
+                        <strong>{{ item["status"] }}</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="verification-actions">
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('admin_verify_user', user_id=item['id']) }}"
+                    >
+
+                        <button
+                            type="submit"
+                            class="button button-primary full-width"
+                            data-confirm="Verify this user?"
+                        >
+                            Verify User
+                        </button>
+
+                    </form>
+
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('admin_reject_user', user_id=item['id']) }}"
+                    >
+
+                        <button
+                            type="submit"
+                            class="button button-danger full-width"
+                            data-confirm="Reject this user?"
+                        >
+                            Reject User
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="content-card empty-state full-span">
+
+                <div class="empty-icon">
+                    ✓
+                </div>
+
+                <h2>
+                    No pending accounts
+                </h2>
+
+                <p>
+                    All registered users have been processed.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script
+    src="{{ url_for('static', filename='js/admin.js') }}"
+></script>
+
+{% endblock %}

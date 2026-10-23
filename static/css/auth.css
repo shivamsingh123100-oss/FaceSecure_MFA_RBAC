@@ -1,0 +1,971 @@
+/* AUTH PAGE */
+
+.auth-page {
+    min-height: calc(100vh - 76px);
+    padding: 65px 0;
+}
+
+.auth-container {
+    max-width: 650px;
+}
+
+.registration-layout {
+    max-width: 1050px;
+}
+
+.auth-heading {
+    margin-bottom: 30px;
+}
+
+.auth-heading.centered {
+    text-align: center;
+}
+
+.auth-heading h1 {
+    margin: 8px 0;
+    font-size: clamp(30px, 5vw, 44px);
+    line-height: 1.12;
+    letter-spacing: -1.5px;
+}
+
+.auth-heading p {
+    max-width: 650px;
+    margin: 0 auto;
+    color: var(--muted);
+}
+
+
+/* AUTH CARD */
+
+.auth-card {
+    padding: 30px;
+}
+
+.login-card {
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+
+/* FORM */
+
+.form-group {
+    margin-bottom: 19px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 7px;
+    color: #3b465a;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.form-group input {
+    width: 100%;
+    min-height: 47px;
+    padding: 11px 13px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    outline: none;
+    background: white;
+    color: var(--text);
+}
+
+.form-group input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(49, 91, 234, 0.09);
+}
+
+.password-field {
+    position: relative;
+}
+
+.password-field input {
+    padding-right: 70px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* PASSWORD STRENGTH */
+
+.password-strength {
+    height: 4px;
+    margin-top: 7px;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #e9edf3;
+}
+
+.password-strength-bar {
+    width: 0;
+    height: 100%;
+    transition: width 0.2s ease;
+}
+
+
+/* FACTORS */
+
+.auth-factor {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.factor-number {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: #edf1ff;
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.factor-content h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.factor-content p {
+    margin: 2px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.factor-divider {
+    margin: 27px 0;
+    border-top: 1px solid var(--border);
+    text-align: center;
+}
+
+.factor-divider span {
+    position: relative;
+    top: -10px;
+    padding: 0 12px;
+    background: white;
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+/* =========================================
+   CAMERA FRAME
+========================================= */
+
+.camera-container {
+
+    position: relative;
+
+    width: 100%;
+
+    min-height: 420px;
+
+    overflow: hidden;
+
+    border-radius: 16px;
+
+    background: #0d1424;
+
+}
+
+/* Live camera */
+.camera-video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: #0d1424;
+}
+
+/* Face positioning frame */
+.camera-overlay {
+
+    position: absolute;
+
+    left: 50%;
+
+    top: 50%;
+
+    width: 250px;
+
+    height: 310px;
+
+    transform: translate(-50%, -50%);
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: center;
+
+    padding: 0 25px 20px;
+
+    border: 3px solid rgba(255, 255, 255, 0.9);
+
+    border-radius: 48% 48% 50% 50%;
+
+    color: white;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    line-height: 1.4;
+
+    text-align: center;
+
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+
+    box-shadow:
+
+        0 0 0 9999px rgba(0, 0, 0, 0.20),
+
+        0 0 25px rgba(255, 255, 255, 0.15);
+
+    pointer-events: none;
+
+}
+/* Camera controls */
+.camera-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 12px 0;
+}
+
+.camera-actions .button {
+    min-height: 44px;
+}
+
+/* Capture status */
+.capture-status {
+    min-height: 38px;
+    margin-bottom: 12px;
+    padding: 9px 12px;
+
+    display: flex;
+    align-items: center;
+
+    border-radius: 8px;
+
+    background: var(--surface-soft);
+    color: var(--muted);
+
+    font-size: 12px;
+}
+
+/* Mobile camera */
+@media (max-width: 600px) {
+
+    .camera-container {
+        min-height: 280px;
+        aspect-ratio: 4 / 3;
+        border-radius: 12px;
+    }
+
+    .camera-overlay {
+        width: 150px;
+        height: 200px;
+
+        border-width: 2px;
+
+        font-size: 10px;
+        padding-bottom: 10px;
+    }
+
+    .camera-actions {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* BOTTOM LINK */
+
+.auth-bottom-link {
+    margin-top: 22px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.auth-bottom-link a {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+
+/* ADMIN */
+
+.admin-auth-page {
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(49, 91, 234, 0.08),
+            transparent 35%
+        ),
+        var(--bg);
+}
+
+.admin-login-card {
+    border-top: 4px solid var(--dark);
+}
+
+.admin-badge {
+    display: inline-flex;
+    margin-bottom: 18px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: var(--dark);
+    color: white;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+/* =========================================================
+   PORTAL ACCESS PAGE
+   ========================================================= */
+
+.portal-page {
+
+    min-height: calc(100vh - 76px);
+
+    padding: 70px 0;
+
+    background:
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(49, 91, 234, 0.07),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 85%,
+            rgba(24, 34, 53, 0.06),
+            transparent 32%
+        ),
+        var(--bg);
+}
+
+
+.portal-container {
+
+    max-width: 1120px;
+
+}
+
+
+/* HEADER */
+
+.portal-header {
+
+    max-width: 720px;
+
+    margin: 0 auto 45px;
+
+    text-align: center;
+
+}
+
+
+.portal-eyebrow {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 14px;
+
+    color: var(--primary);
+
+    font-size: 10px;
+
+    font-weight: 900;
+
+    letter-spacing: 1.5px;
+
+}
+
+
+.portal-header h1 {
+
+    margin: 0 0 13px;
+
+    color: var(--text);
+
+    font-size: clamp(34px, 5vw, 48px);
+
+    line-height: 1.1;
+
+    letter-spacing: -1.8px;
+
+}
+
+
+.portal-header p {
+
+    max-width: 650px;
+
+    margin: auto;
+
+    color: var(--muted);
+
+    font-size: 14px;
+
+    line-height: 1.7;
+
+}
+
+
+/* STATUS */
+
+.portal-eyebrow .status-dot {
+
+    width: 8px;
+
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: #20a464;
+
+    box-shadow:
+        0 0 0 4px rgba(32, 164, 100, 0.10);
+
+}
+
+
+/* GRID */
+
+.portal-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 24px;
+
+}
+
+
+/* CARD */
+
+.portal-card {
+
+    position: relative;
+
+    display: flex;
+
+    flex-direction: column;
+
+    min-height: 535px;
+
+    padding: 30px;
+
+    overflow: hidden;
+
+    border: 1px solid var(--border);
+
+    border-radius: 18px;
+
+    background: rgba(255,255,255,0.96);
+
+    box-shadow:
+        0 18px 50px rgba(21, 35, 65, 0.07);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+
+}
+
+
+.portal-card:hover {
+
+    transform: translateY(-5px);
+
+    box-shadow:
+        0 25px 60px rgba(21, 35, 65, 0.12);
+
+    border-color: rgba(49, 91, 234, 0.20);
+
+}
+
+
+/* TOP */
+
+.portal-card-top {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-bottom: 28px;
+
+}
+
+
+.portal-icon {
+
+    width: 54px;
+
+    height: 54px;
+
+    display: grid;
+
+    place-items: center;
+
+    flex: 0 0 54px;
+
+    border-radius: 15px;
+
+    font-size: 19px;
+
+    font-weight: 900;
+
+}
+
+
+.user-icon {
+
+    background: #edf2ff;
+
+    color: var(--primary);
+
+}
+
+
+.admin-icon {
+
+    background: #182235;
+
+    color: white;
+
+}
+
+
+.portal-label {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+}
+
+
+.portal-label span {
+
+    color: var(--text);
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+
+}
+
+
+.portal-label small {
+
+    color: var(--muted);
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.7px;
+
+}
+
+
+/* CONTENT */
+
+.portal-card-content {
+
+    margin-bottom: 28px;
+
+}
+
+
+.portal-card-content h2 {
+
+    margin: 0 0 10px;
+
+    color: var(--text);
+
+    font-size: 25px;
+
+    letter-spacing: -0.5px;
+
+}
+
+
+.portal-card-content p {
+
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 13px;
+
+    line-height: 1.7;
+
+}
+
+
+/* SECURITY */
+
+.portal-security {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 13px;
+
+    padding: 20px;
+
+    border-radius: 13px;
+
+    background: #f7f9fc;
+
+}
+
+
+.security-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+}
+
+
+.security-check {
+
+    width: 25px;
+
+    height: 25px;
+
+    flex: 0 0 25px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 7px;
+
+    background: #e8f7ef;
+
+    color: #19965b;
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+}
+
+
+.security-item div {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+
+}
+
+
+.security-item strong {
+
+    color: #273449;
+
+    font-size: 11px;
+
+}
+
+
+.security-item small {
+
+    color: var(--muted);
+
+    font-size: 10px;
+
+}
+
+
+/* ACTIONS */
+
+.portal-card-actions {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    margin-top: auto;
+
+    padding-top: 25px;
+
+}
+
+
+.portal-primary-button {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    min-height: 48px;
+
+    padding: 0 16px;
+
+    border-radius: 9px;
+
+    background: var(--primary);
+
+    color: white;
+
+    text-decoration: none;
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+
+}
+
+
+.portal-primary-button:hover {
+
+    transform: translateY(-1px);
+
+    color: white;
+
+    box-shadow:
+        0 9px 22px rgba(49, 91, 234, 0.20);
+
+}
+
+
+.admin-button {
+
+    background: #182235;
+
+}
+
+
+.admin-button:hover {
+
+    box-shadow:
+        0 9px 22px rgba(24, 34, 53, 0.20);
+
+}
+
+
+.portal-primary-button span {
+
+    font-size: 17px;
+
+}
+
+
+.portal-secondary-link {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    min-height: 42px;
+
+    color: var(--muted);
+
+    text-decoration: none;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    transition: color 0.2s ease;
+
+}
+
+
+.portal-secondary-link:hover {
+
+    color: var(--primary);
+
+}
+
+
+.portal-secondary-link span {
+
+    font-size: 14px;
+
+}
+
+
+/* FOOTER */
+
+.portal-security-footer {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    max-width: 650px;
+
+    margin: 28px auto 0;
+
+    padding: 15px 18px;
+
+    border: 1px solid #e1e7f0;
+
+    border-radius: 12px;
+
+    background: rgba(255,255,255,0.75);
+
+}
+
+
+.footer-security-icon {
+
+    width: 30px;
+
+    height: 30px;
+
+    flex: 0 0 30px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 8px;
+
+    background: #e8f7ef;
+
+    color: #19965b;
+
+    font-size: 12px;
+
+    font-weight: 900;
+
+}
+
+
+.portal-security-footer div:last-child {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+}
+
+
+.portal-security-footer strong {
+
+    color: #273449;
+
+    font-size: 11px;
+
+}
+
+
+.portal-security-footer span {
+
+    color: var(--muted);
+
+    font-size: 10px;
+
+    line-height: 1.5;
+
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 800px) {
+
+    .portal-page {
+
+        padding: 45px 15px;
+
+    }
+
+    .portal-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .portal-card {
+
+        min-height: auto;
+
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .portal-header {
+
+        margin-bottom: 30px;
+
+    }
+
+    .portal-card {
+
+        padding: 22px;
+
+    }
+
+    .portal-security-footer {
+
+        align-items: flex-start;
+
+    }
+
+}

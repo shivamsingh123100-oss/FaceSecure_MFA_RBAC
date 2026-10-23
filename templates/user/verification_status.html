@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Verification Status | FaceSecure
+{% endblock %}
+
+{% block content %}
+
+<section class="status-page">
+
+    <div class="container narrow-container">
+
+        {% if user %}
+
+            {% if user["status"] == "VERIFIED" %}
+
+                <div class="status-card status-success">
+
+                    <div class="status-icon">
+                        ✓
+                    </div>
+
+                    <span class="eyebrow">
+                        VERIFIED
+                    </span>
+
+                    <h1>
+                        Account verified
+                    </h1>
+
+                    <p>
+                        Your account has been verified.
+                        You can now authenticate.
+                    </p>
+
+                    {% if user["role"] == "ADMIN" %}
+
+                        <a
+                            href="{{ url_for('admin_login') }}"
+                            class="button button-dark"
+                        >
+                            Admin Login
+                        </a>
+
+                    {% else %}
+
+                        <a
+                            href="{{ url_for('user_login') }}"
+                            class="button button-primary"
+                        >
+                            User Login
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+
+            {% elif user["status"] == "REJECTED" %}
+
+                <div class="status-card status-error">
+
+                    <div class="status-icon">
+                        !
+                    </div>
+
+                    <span class="eyebrow">
+                        REJECTED
+                    </span>
+
+                    <h1>
+                        Account rejected
+                    </h1>
+
+                    <p>
+                        Your account has not been approved
+                        by an administrator.
+                    </p>
+
+                    <a
+                        href="{{ url_for('index') }}"
+                        class="button button-secondary"
+                    >
+                        Return Home
+                    </a>
+
+                </div>
+
+
+            {% else %}
+
+                <div class="status-card status-pending">
+
+                    <div class="status-icon">
+                        …
+                    </div>
+
+                    <span class="eyebrow">
+                        PENDING
+                    </span>
+
+                    <h1>
+                        Verification required
+                    </h1>
+
+                    <p>
+                        Your registration has been submitted
+                        and is waiting for administrator verification.
+                    </p>
+
+                    <a
+                        href="{{ url_for('index') }}"
+                        class="button button-secondary"
+                    >
+                        Return Home
+                    </a>
+
+                </div>
+
+            {% endif %}
+
+        {% else %}
+
+            <div class="status-card">
+
+                <div class="status-icon">
+                    ?
+                </div>
+
+                <h1>
+                    Check your account status
+                </h1>
+
+                <p>
+                    Log in to view your verification status.
+                </p>
+
+                <a
+                    href="{{ url_for('user_login') }}"
+                    class="button button-primary"
+                >
+                    User Login
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}

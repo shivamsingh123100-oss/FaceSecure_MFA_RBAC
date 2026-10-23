@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block title %}
+    User Login | FaceSecure
+{% endblock %}
+
+{% block content %}
+
+<section class="auth-page">
+
+    <div class="container auth-container">
+
+        <div class="auth-heading centered">
+
+            <span class="eyebrow">
+                USER AUTHENTICATION
+            </span>
+
+            <h1>
+                Welcome back
+            </h1>
+
+            <p>
+                Complete both authentication factors
+                to access your account.
+            </p>
+
+        </div>
+<form method="POST" action="{{ url_for('user_login') }}">
+
+
+            <div class="auth-factor">
+
+                <div class="factor-number">
+                    01
+                </div>
+
+                <div class="factor-content">
+
+                    <h3>
+                        Password verification
+                    </h3>
+
+                    <p>
+                        Enter your registered credentials.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="username">
+                    Username
+                </label>
+
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Enter username"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <div class="password-field">
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        data-target="password"
+                    >
+                        Show
+                    </button>
+
+                </div>
+
+            </div>
+
+
+           <!-- FACE AUTHENTICATION -->
+
+<div class="face-auth-section">
+
+    <div class="factor-heading">
+
+        <div class="factor-icon">
+            F
+        </div>
+
+        <div>
+            <h3>Face Verification</h3>
+
+            <p>
+                Verify your registered facial identity.
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- CAMERA -->
+    <div class="camera-container login-camera">
+
+        <video
+            id="loginVideo"
+            class="camera-video"
+            autoplay
+            playsinline
+        ></video>
+
+
+        <canvas
+            id="loginCanvas"
+            class="hidden"
+        ></canvas>
+
+
+        <div class="camera-overlay">
+
+            <div class="face-frame">
+                <span></span>
+            </div>
+
+            <p>
+                Position your face inside the frame
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- FACE IMAGE -->
+    <input
+        type="hidden"
+        name="face_image"
+        id="loginFaceImage"
+    >
+
+
+    <!-- CAMERA BUTTONS -->
+    <div class="camera-actions">
+
+        <button
+            type="button"
+            class="button button-secondary"
+            id="startLoginCamera"
+        >
+            Start Camera
+        </button>
+
+
+        <button
+            type="button"
+            class="button button-dark"
+            id="captureLoginFace"
+        >
+            Capture Face
+        </button>
+
+    </div>
+
+
+    <!-- CAMERA STATUS -->
+    <div
+        class="capture-status"
+        id="loginCaptureStatus"
+    >
+        Camera not started.
+    </div>
+
+</div>
+
+            <button
+                type="submit"
+                class="button button-primary full-width"
+            >
+                Authenticate
+            </button>
+
+        </form>
+
+
+        <div class="auth-bottom-link">
+
+            Don't have an account?
+
+            <a href="{{ url_for('user_register') }}">
+                Register
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script
+    src="{{ url_for('static', filename='js/auth.js') }}"
+></script>
+
+<script
+    src="{{ url_for('static', filename='js/camera.js') }}"
+></script>
+
+{% endblock %}

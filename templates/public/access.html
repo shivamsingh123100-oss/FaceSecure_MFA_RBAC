@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Access Portal | FaceSecure
+{% endblock %}
+
+{% block content %}
+
+<section class="portal-page">
+
+    <div class="container portal-container">
+
+        <!-- HEADER -->
+        <div class="portal-header">
+
+            <div class="portal-eyebrow">
+                <span class="status-dot"></span>
+                SECURE ACCESS
+            </div>
+
+            <h1>
+                Choose your portal
+            </h1>
+
+            <p>
+                Select the appropriate portal to continue with
+                secure password and facial authentication.
+            </p>
+
+        </div>
+
+
+        <!-- PORTAL CARDS -->
+        <div class="portal-grid">
+
+            <!-- USER -->
+            <article class="portal-card user-portal-card">
+
+                <div class="portal-card-top">
+
+                    <div class="portal-icon user-icon">
+                        U
+                    </div>
+
+                    <div class="portal-label">
+                        <span>USER</span>
+                        <small>STANDARD ACCESS</small>
+                    </div>
+
+                </div>
+
+
+                <div class="portal-card-content">
+
+                    <h2>
+                        User Portal
+                    </h2>
+
+                    <p>
+                        Access your account using your registered
+                        username, password and facial authentication.
+                    </p>
+
+                </div>
+
+
+                <div class="portal-security">
+
+                    <div class="security-item">
+                        <span class="security-check">✓</span>
+
+                        <div>
+                            <strong>Password</strong>
+                            <small>Credential verification</small>
+                        </div>
+                    </div>
+
+
+                    <div class="security-item">
+                        <span class="security-check">✓</span>
+
+                        <div>
+                            <strong>Face</strong>
+                            <small>Biometric verification</small>
+                        </div>
+                    </div>
+
+
+                    <div class="security-item">
+                        <span class="security-check">✓</span>
+
+                        <div>
+                            <strong>Authorization</strong>
+                            <small>Account verification status</small>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="portal-card-actions">
+
+                    <a
+                        href="{{ url_for('user_login') }}"
+                        class="portal-primary-button"
+                    >
+                        User Login
+                        <span>→</span>
+                    </a>
+
+
+                    <a
+                        href="{{ url_for('user_register') }}"
+                        class="portal-secondary-link"
+                    >
+                        Create User Account
+                        <span>→</span>
+                    </a>
+
+                </div>
+
+            </article>
+
+
+            <!-- ADMIN -->
+            <article class="portal-card admin-portal-card">
+
+                <div class="portal-card-top">
+
+                    <div class="portal-icon admin-icon">
+                        A
+                    </div>
+
+                    <div class="portal-label">
+                        <span>ADMIN</span>
+                        <small>CONTROL ACCESS</small>
+                    </div>
+
+                </div>
+
+
+                <div class="portal-card-content">
+
+                    <h2>
+                        Admin Portal
+                    </h2>
+
+                    <p>
+                        Securely authenticate as an administrator
+                        and access user verification and monitoring.
+                    </p>
+
+                </div>
+
+
+                <div class="portal-security">
+
+                    <div class="security-item">
+                        <span class="security-check">✓</span>
+
+                        <div>
+                            <strong>Admin Authentication</strong>
+                            <small>Password + face verification</small>
+                        </div>
+                    </div>
+
+
+                    <div class="security-item">
+                        <span class="security-check">✓</span>
+
+                        <div>
+                            <strong>User Management</strong>
+                            <small>Verify registered users</small>
+                        </div>
+                    </div>
+
+
+                    <div class="security-item">
+                        <span class="security-check">✓</span>
+
+                        <div>
+                            <strong>Activity Monitoring</strong>
+                            <small>Monitor system activity</small>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="portal-card-actions">
+
+                    <a
+                        href="{{ url_for('admin_login') }}"
+                        class="portal-primary-button admin-button"
+                    >
+                        Admin Login
+                        <span>→</span>
+                    </a>
+
+
+                    <a
+                        href="{{ url_for('admin_register') }}"
+                        class="portal-secondary-link"
+                    >
+                        Register Admin
+                        <span>→</span>
+                    </a>
+
+                </div>
+
+            </article>
+
+        </div>
+
+
+        <!-- SECURITY FOOTER -->
+        <div class="portal-security-footer">
+
+            <div class="footer-security-icon">
+                ✓
+            </div>
+
+            <div>
+
+                <strong>
+                    Multi-factor access protection
+                </strong>
+
+                <span>
+                    Password authentication + facial verification +
+                    role-based authorization
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

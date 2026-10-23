@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Admin Registration | FaceSecure
+{% endblock %}
+
+{% block content %}
+
+<section class="auth-page admin-auth-page">
+
+    <div class="container registration-layout">
+
+        <div class="auth-heading centered">
+
+            <span class="eyebrow">
+                ADMINISTRATOR REGISTRATION
+            </span>
+
+            <h1>
+                Create administrator account
+            </h1>
+
+            <p>
+                Register administrator credentials and
+                capture the administrator's face.
+            </p>
+
+        </div>
+
+
+        <form
+            method="POST"
+            class="registration-grid"
+            id="adminRegistrationForm"
+        >
+
+            <div class="auth-card">
+
+                <div class="admin-badge">
+                    ADMIN
+                </div>
+
+                <div class="card-header">
+
+                    <h2>
+                        Account details
+                    </h2>
+
+                    <p>
+                        Administrator account information.
+                    </p>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="full_name">
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="full_name"
+                        name="full_name"
+                        placeholder="Enter full name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="username">
+                        Username
+                    </label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Choose administrator username"
+                        minlength="3"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Minimum 8 characters"
+                        minlength="8"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="confirm_password">
+                        Confirm Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="confirm_password"
+                        name="confirm_password"
+                        placeholder="Confirm password"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="auth-card">
+
+                <div class="card-header">
+
+                    <h2>
+                        Administrator face
+                    </h2>
+
+                    <p>
+                        Exactly one face is required.
+                    </p>
+
+                </div>
+
+
+                <div class="camera-container">
+
+                    <video
+                        id="adminRegistrationVideo"
+                        class="camera-video"
+                        autoplay
+                        playsinline
+                    ></video>
+
+                    <canvas
+                        id="adminRegistrationCanvas"
+                        class="hidden"
+                    ></canvas>
+
+                    <div class="camera-overlay">
+                        Position your face inside the frame
+                    </div>
+
+                </div>
+
+
+                <input
+                    type="hidden"
+                    name="face_image"
+                    id="adminRegistrationFaceImage"
+                >
+
+
+                <div class="camera-actions">
+
+                    <button
+                        type="button"
+                        class="button button-secondary"
+                        id="startAdminRegistrationCamera"
+                    >
+                        Start Camera
+                    </button>
+
+                    <button
+                        type="button"
+                        class="button button-dark"
+                        id="captureAdminRegistrationFace"
+                    >
+                        Capture Face
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="capture-status"
+                    id="adminRegistrationCaptureStatus"
+                >
+                    Camera not started.
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="button button-dark full-width"
+                >
+                    Create Administrator
+                </button>
+
+            </div>
+
+        </form>
+
+
+        <div class="auth-bottom-link">
+
+            Already registered?
+
+            <a href="{{ url_for('admin_login') }}">
+                Admin Login
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script
+    src="{{ url_for('static', filename='js/auth.js') }}"
+></script>
+
+<script
+    src="{{ url_for('static', filename='js/camera.js') }}"
+></script>
+
+{% endblock %}

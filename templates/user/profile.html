@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}
+    User Profile | FaceSecure
+{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page">
+
+    <div class="container narrow-container">
+
+        <div class="dashboard-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    PROFILE
+                </span>
+
+                <h1>
+                    User profile
+                </h1>
+
+                <p>
+                    Your registered account information.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="content-card profile-card">
+
+            <div class="profile-avatar">
+                {{ user["full_name"][0]|upper }}
+            </div>
+
+            <h2>
+                {{ user["full_name"] }}
+            </h2>
+
+            <span class="profile-role">
+                {{ user["role"] }}
+            </span>
+
+
+            <div class="profile-details">
+
+                <div class="info-item">
+
+                    <span>
+                        Username
+                    </span>
+
+                    <strong>
+                        {{ user["username"] }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span>
+                        Account Status
+                    </span>
+
+                    <strong>
+                        {{ user["status"] }}
+                    </strong>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span>
+                        Face Authentication
+                    </span>
+
+                    <strong>
+                        Registered
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <a
+                href="{{ url_for('user_dashboard') }}"
+                class="button button-secondary"
+            >
+                Back to Dashboard
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

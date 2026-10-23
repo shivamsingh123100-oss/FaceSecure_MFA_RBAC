@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}
+Rejected Users | FaceSecure
+{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page">
+
+    <div class="container">
+
+        <div class="dashboard-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    REJECTED ACCOUNTS
+                </span>
+
+                <h1>
+                    Rejected users
+                </h1>
+
+                <p>
+                    Accounts that were not approved by an administrator.
+                </p>
+
+            </div>
+
+            <a
+                href="{{ url_for('admin_dashboard') }}"
+                class="button button-secondary"
+            >
+                Dashboard
+            </a>
+
+        </div>
+
+
+        <div class="content-card">
+
+            <div class="table-wrapper">
+
+                <table class="data-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% for item in users %}
+
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    {{ item["full_name"] }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                {{ item["username"] }}
+                            </td>
+
+                            <td>
+                                {{ item["role"] }}
+                            </td>
+
+                            <td>
+                                <span class="badge badge-danger">
+                                    REJECTED
+                                </span>
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            {% if not users %}
+
+            <div class="empty-state">
+
+                <h3>
+                    No rejected users
+                </h3>
+
+                <p>
+                    No rejected accounts are currently available.
+                </p>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

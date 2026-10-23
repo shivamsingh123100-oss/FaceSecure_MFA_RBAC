@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Admin Login | FaceSecure
+{% endblock %}
+
+
+{% block content %}
+
+<section class="auth-page admin-auth-page">
+
+    <div class="container auth-container">
+
+        <!-- HEADER -->
+        <div class="auth-heading centered">
+
+            <span class="eyebrow">
+                ADMINISTRATOR ACCESS
+            </span>
+
+            <h1>
+                Admin authentication
+            </h1>
+
+            <p>
+                Administrator access requires password and
+                registered face verification.
+            </p>
+
+        </div>
+
+
+        <!-- LOGIN FORM -->
+        <form
+            method="POST"
+            action="{{ url_for('admin_login') }}"
+        >
+
+            <!-- ADMIN BADGE -->
+            <div class="admin-badge">
+                ADMIN
+            </div>
+
+
+            <!-- USERNAME -->
+            <div class="form-group">
+
+                <label for="username">
+                    Administrator Username
+                </label>
+
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Enter administrator username"
+                    required
+                >
+
+            </div>
+
+
+            <!-- PASSWORD -->
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <div class="password-field">
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter password"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        data-target="password"
+                    >
+                        Show
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- FACE AUTHENTICATION -->
+            <div class="face-auth-section">
+
+                <div class="factor-heading">
+
+                    <div class="factor-icon">
+                        A
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Administrator Face Verification
+                        </h3>
+
+                        <p>
+                            Verify your registered administrator identity.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CAMERA -->
+                <div class="camera-container admin-login-camera">
+
+                    <video
+                        id="adminLoginVideo"
+                        class="camera-video"
+                        autoplay
+                        playsinline
+                        muted
+                    ></video>
+
+                    <canvas
+                        id="adminLoginCanvas"
+                        class="hidden"
+                    ></canvas>
+
+                    <div class="camera-overlay">
+                        Position your face inside the frame
+                    </div>
+
+                </div>
+
+
+                <!-- FACE IMAGE -->
+                <input
+                    type="hidden"
+                    name="face_image"
+                    id="adminLoginFaceImage"
+                >
+
+
+                <!-- CAMERA BUTTONS -->
+                <div class="camera-actions">
+
+                    <button
+                        type="button"
+                        class="button button-secondary"
+                        id="startAdminLoginCamera"
+                    >
+                        Start Camera
+                    </button>
+
+                    <button
+                        type="button"
+                        class="button button-dark"
+                        id="captureAdminLoginFace"
+                    >
+                        Capture Face
+                    </button>
+
+                </div>
+
+
+                <!-- CAMERA STATUS -->
+                <div
+                    class="capture-status"
+                    id="adminLoginCaptureStatus"
+                >
+                    Camera not started.
+                </div>
+
+            </div>
+
+
+            <!-- LOGIN BUTTON -->
+            <button
+                type="submit"
+                class="button button-dark full-width"
+            >
+                Authenticate Administrator
+            </button>
+
+        </form>
+
+
+        <!-- REGISTER LINK -->
+        <div class="auth-bottom-link">
+
+            Need an administrator account?
+
+            <a href="{{ url_for('admin_register') }}">
+                Register Admin
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/camera.js') }}"></script>
+
+{% endblock %}
