@@ -1621,7 +1621,8 @@ def admin_profile():
 
     return render_template(
         "admin/profile.html",
-        admin=admin
+        admin=admin,
+        user=admin
     )
 
 
