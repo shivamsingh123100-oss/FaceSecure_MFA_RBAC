@@ -24,6 +24,8 @@ DEBUG = APP_ENV == "development"
 
 class Config:
 
+    BASE_DIR = BASE_DIR
+
     # Application security
     SECRET_KEY = os.getenv("SECRET_KEY")
 
