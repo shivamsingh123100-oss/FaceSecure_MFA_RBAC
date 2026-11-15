@@ -327,7 +327,7 @@ def get_user_by_username(username):
         """
         SELECT *
         FROM users
-        WHERE username = ?
+        WHERE username = ? COLLATE NOCASE
         """,
         (username,)
     ).fetchone()
@@ -344,7 +344,7 @@ def username_exists(username):
         """
         SELECT id
         FROM users
-        WHERE username = ?
+        WHERE username = ? COLLATE NOCASE
         LIMIT 1
         """,
         (username,)
