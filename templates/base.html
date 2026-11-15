@@ -44,16 +44,14 @@
     >
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/results.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/results-forms.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/results-data.css') }}">
 
     {% block extra_css %}{% endblock %}
 
 </head>
 
 <body>
-
-    <div id="page-loader" class="page-loader">
-        <div class="loader-ring"></div>
-    </div>
 
     <header class="site-header">
 
@@ -67,7 +65,7 @@
                 <span>FaceSecure</span>
             </a>
 
-            <nav class="main-nav">
+            <nav class="main-nav" id="mainNavigation">
 
                 <a href="{{ url_for('index') }}">
                     Home
@@ -131,6 +129,8 @@
                 class="mobile-menu-button"
                 id="mobileMenuButton"
                 aria-label="Open navigation"
+                aria-expanded="false"
+                aria-controls="mainNavigation"
             >
                 ☰
             </button>

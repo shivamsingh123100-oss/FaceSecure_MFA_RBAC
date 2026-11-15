@@ -113,7 +113,7 @@ def teacher_course(course_id):
     if request.method == "POST":
         roster = db.execute(
             """
-            SELECT u.id, u.username, u.full_name, r.marks
+            SELECT u.id, u.username, u.full_name, r.marks, r.grade, r.status
             FROM enrollments e JOIN users u ON u.id = e.student_id
             LEFT JOIN results r ON r.course_id = e.course_id AND r.student_id = e.student_id
             WHERE e.course_id = ? ORDER BY u.full_name
@@ -121,29 +121,48 @@ def teacher_course(course_id):
             (course_id,),
         ).fetchall()
         publish = request.form.get("action") == "publish"
-        now = datetime.now(timezone.utc).isoformat()
+        form_marks = {}
+        updates = []
         for student in roster:
             raw = request.form.get(f"marks_{student['id']}", "").strip()
+            form_marks[str(student["id"])] = raw
+            if not raw:
+                if publish:
+                    flash(f"Enter a mark for every student before publishing. {student['full_name']} is missing a mark.", "error")
+                    return render_template("results/course.html", user=user, course=course, roster=roster, form_marks=form_marks)
+                continue
             try:
                 marks = float(raw)
             except ValueError:
                 flash(f"Enter a valid mark for {student['full_name']}.", "error")
-                return redirect(url_for("results.teacher_course", course_id=course_id))
+                return render_template("results/course.html", user=user, course=course, roster=roster, form_marks=form_marks)
             if not isfinite(marks) or not 0 <= marks <= course["max_marks"]:
                 flash(f"Marks for {student['full_name']} must be between 0 and {course['max_marks']:g}.", "error")
-                return redirect(url_for("results.teacher_course", course_id=course_id))
-            db.execute(
-                """
-                INSERT INTO results (course_id, student_id, marks, grade, status, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?)
-                ON CONFLICT(course_id, student_id) DO UPDATE SET
-                    marks = excluded.marks, grade = excluded.grade,
-                    status = excluded.status, updated_at = excluded.updated_at
-                """,
-                (course_id, student["id"], marks, grade_for(marks, course["max_marks"]),
-                 "PUBLISHED" if publish else "DRAFT", now),
-            )
-        db.commit()
+                return render_template("results/course.html", user=user, course=course, roster=roster, form_marks=form_marks)
+            updates.append((marks, grade_for(marks, course["max_marks"]), "PUBLISHED" if publish else "DRAFT", datetime.now(timezone.utc).isoformat(), course_id, student["id"]))
+
+        if not updates:
+            flash("Enter at least one mark before saving.", "error")
+            return render_template("results/course.html", user=user, course=course, roster=roster, form_marks=form_marks)
+
+        try:
+            db.execute("BEGIN")
+            for marks, grade, status, updated_at, course_id, student_id in updates:
+                db.execute(
+                    """
+                    INSERT INTO results (marks, grade, status, updated_at, course_id, student_id)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    ON CONFLICT(course_id, student_id) DO UPDATE SET
+                        marks = excluded.marks, grade = excluded.grade,
+                        status = excluded.status, updated_at = excluded.updated_at
+                    """,
+                    (marks, grade, status, updated_at, course_id, student_id),
+                )
+            db.commit()
+        except Exception:
+            db.rollback()
+            flash("The gradebook could not be saved. Please try again.", "error")
+            return render_template("results/course.html", user=user, course=course, roster=roster, form_marks=form_marks)
         log_activity(
             username=user["username"], role=user["university_role"], action="RESULTS_PUBLISHED" if publish else "RESULTS_SAVED",
             status="SUCCESS", user_id=user["id"],

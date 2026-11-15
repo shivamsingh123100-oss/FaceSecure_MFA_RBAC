@@ -1,12 +1,22 @@
 {% extends "base.html" %}
 {% block title %}Teacher Portal | FaceSecure University{% endblock %}
 {% block content %}
-<section class="dashboard-page"><div class="container">
-    <div class="dashboard-header"><div><span class="eyebrow">TEACHER PORTAL</span><h1>Welcome, {{ user["full_name"] }}</h1><p>Manage your course marks and release results to students.</p></div><div class="dashboard-status"><span class="status-dot"></span>TEACHER</div></div>
-    <div class="content-card"><div class="card-header"><div><span class="eyebrow">MY COURSES</span><h2>Assigned courses</h2></div><span class="badge">{{ courses|length }} courses</span></div>
-    {% if courses %}<div class="table-wrapper"><table class="data-table"><thead><tr><th>Course</th><th>Term</th><th>Students</th><th>Marks</th><th></th></tr></thead><tbody>
-    {% for course in courses %}<tr><td><strong>{{ course["code"] }}</strong><br>{{ course["name"] }}</td><td>{{ course["term"] }}</td><td>{{ course["student_count"] }}</td><td>Out of {{ "%.1f"|format(course["max_marks"]) }}</td><td><a class="table-action" href="{{ url_for('results.teacher_course', course_id=course['id']) }}">Open gradebook</a></td></tr>{% endfor %}
-    </tbody></table></div>{% else %}<div class="empty-state"><h3>No courses assigned</h3><p>Ask your university administrator to assign a course to your verified teacher account.</p></div>{% endif %}
+<section class="dashboard-page results-page">
+  <div class="container">
+    <div class="results-hero teacher-hero">
+      <div class="results-hero-copy"><span class="eyebrow">TEACHER PORTAL</span><h1>Good to see you, {{ user["full_name"] }}</h1><p>Keep your classes organized and release grades to students when you are ready.</p></div>
+      <div class="results-hero-mark" aria-hidden="true">T</div>
     </div>
-</div></section>
+    <div class="content-card results-card">
+      <div class="card-header results-card-header"><div><span class="eyebrow">YOUR TEACHING</span><h2>Assigned courses</h2><p>Open a gradebook to enter or publish marks.</p></div><span class="badge results-count">{{ courses|length }} {{ 'course' if courses|length == 1 else 'courses' }}</span></div>
+      {% if courses %}
+        <div class="table-wrapper results-table-wrap"><table class="data-table results-table"><thead><tr><th>Course</th><th>Term</th><th>Students</th><th>Maximum mark</th><th>Gradebook</th></tr></thead><tbody>
+        {% for course in courses %}<tr><td><strong>{{ course["code"] }}</strong><span class="cell-subtitle">{{ course["name"] }}</span></td><td>{{ course["term"] }}</td><td><span class="student-count">{{ course["student_count"] }}</span></td><td>Out of {{ "%.1f"|format(course["max_marks"]) }}</td><td><a class="table-action results-open-link" href="{{ url_for('results.teacher_course', course_id=course['id']) }}">Open gradebook <span aria-hidden="true">→</span></a></td></tr>{% endfor %}
+        </tbody></table></div>
+      {% else %}
+        <div class="empty-state results-empty"><div class="empty-icon">T</div><h3>No courses assigned yet</h3><p>Your administrator can assign courses after verifying your teacher account.</p></div>
+      {% endif %}
+    </div>
+  </div>
+</section>
 {% endblock %}

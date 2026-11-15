@@ -1,13 +1,19 @@
 {% extends "base.html" %}
 {% block title %}Gradebook | {{ course["code"] }}{% endblock %}
 {% block content %}
-<section class="dashboard-page"><div class="container">
-    <div class="dashboard-header"><div><span class="eyebrow">TEACHER GRADEBOOK</span><h1>{{ course["code"] }} · {{ course["name"] }}</h1><p>{{ course["term"] }} · Marks are out of {{ "%.1f"|format(course["max_marks"]) }}. Students see grades only after publication.</p></div><a class="button button-secondary" href="{{ url_for('results.teacher_dashboard') }}">My courses</a></div>
-    <div class="content-card"><form method="POST"><input type="hidden" name="csrf_token" value="{{ results_csrf_token() }}">
-    {% if roster %}<div class="table-wrapper"><table class="data-table"><thead><tr><th>Student</th><th>Username</th><th>Mark</th><th>Current grade</th><th>Status</th></tr></thead><tbody>
-    {% for student in roster %}<tr><td><strong>{{ student["full_name"] }}</strong></td><td>{{ student["username"] }}</td><td><input type="number" name="marks_{{ student['id'] }}" min="0" max="{{ course['max_marks'] }}" step="0.01" value="{{ student['marks'] if student['marks'] is not none else '' }}" required></td><td>{{ student["grade"] or "—" }}</td><td>{{ student["status"] or "Not entered" }}</td></tr>{% endfor %}
-    </tbody></table></div><div class="camera-actions"><button type="submit" name="action" value="draft" class="button button-secondary">Save draft</button><button type="submit" name="action" value="publish" class="button button-primary">Publish results</button></div>
-    {% else %}<div class="empty-state"><h3>No students enrolled</h3><p>Your administrator needs to enroll students before you can enter marks.</p></div>{% endif %}
+<section class="dashboard-page results-page">
+  <div class="container">
+    <div class="results-hero gradebook-hero"><div class="results-hero-copy"><span class="eyebrow">TEACHER GRADEBOOK</span><h1>{{ course["code"] }} <span class="hero-divider">/</span> {{ course["name"] }}</h1><p>{{ course["term"] }} · Marks are out of {{ "%.1f"|format(course["max_marks"]) }}. Save a draft as you work, then publish when every mark is ready.</p></div><a class="button button-hero-secondary" href="{{ url_for('results.teacher_dashboard') }}"><span aria-hidden="true">←</span> My courses</a></div>
+
+    <div class="gradebook-toolbar"><div><span class="eyebrow">CLASS ROSTER</span><h2>Enter student marks</h2><p>Drafts are private to you. Published results appear in each student's portal.</p></div><div class="gradebook-stats"><span><strong>{{ roster|length }}</strong> {{ 'student' if roster|length == 1 else 'students' }}</span><span><strong>{{ "%.1f"|format(course["max_marks"]) }}</strong> max marks</span></div></div>
+
+    <div class="content-card results-card gradebook-card"><form method="POST" data-gradebook-form data-max-marks="{{ course['max_marks'] }}"><input type="hidden" name="csrf_token" value="{{ results_csrf_token() }}">
+      {% if roster %}<div class="table-wrapper results-table-wrap"><table class="data-table results-table gradebook-table"><thead><tr><th>Student</th><th>Username</th><th>Marks <span class="table-hint">/ {{ "%.1f"|format(course["max_marks"]) }}</span></th><th>Preview grade</th><th>Saved state</th></tr></thead><tbody>
+      {% for student in roster %}{% set current_marks = form_marks.get(student['id']|string, student['marks']) if form_marks is defined else student['marks'] %}<tr><td><strong>{{ student["full_name"] }}</strong></td><td><span class="username-chip">{{ student["username"] }}</span></td><td><input class="mark-input" type="number" name="marks_{{ student['id'] }}" min="0" max="{{ course['max_marks'] }}" step="0.01" value="{{ current_marks if current_marks is not none else '' }}" inputmode="decimal" aria-label="Marks for {{ student['full_name'] }}" placeholder="Enter mark"></td><td><span class="grade-preview" data-grade-preview>{{ student["grade"] or "—" }}</span></td><td>{% if student["status"] == "PUBLISHED" %}<span class="status-pill status-published">Published</span>{% elif student["status"] == "DRAFT" %}<span class="status-pill status-draft">Draft</span>{% else %}<span class="status-pill status-empty">Not entered</span>{% endif %}</td></tr>{% endfor %}
+      </tbody></table></div><div class="gradebook-footer"><p class="gradebook-feedback" data-gradebook-feedback aria-live="polite">You can save an incomplete gradebook as a draft.</p><div class="gradebook-actions"><button type="submit" name="action" value="draft" class="button button-secondary" data-submit-state="Saving draft…">Save draft</button><button type="submit" name="action" value="publish" class="button button-primary" data-publish-results data-submit-state="Publishing…">Publish results <span aria-hidden="true">→</span></button></div></div>
+      {% else %}<div class="empty-state results-empty"><div class="empty-icon">＋</div><h3>No students in this class yet</h3><p>Your administrator needs to enroll students before marks can be entered.</p></div>{% endif %}
     </form></div>
-</div></section>
+  </div>
+</section>
 {% endblock %}
+{% block extra_js %}<script src="{{ url_for('static', filename='js/results.js') }}" defer></script>{% endblock %}
