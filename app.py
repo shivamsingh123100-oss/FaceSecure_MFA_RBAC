@@ -59,6 +59,8 @@ from security import (
     verify_password
 )
 
+from results import results_bp
+
 
 # ============================================================
 # APPLICATION CONFIGURATION
@@ -71,6 +73,7 @@ app = Flask(
 )
 
 app.config.from_object(Config)
+app.register_blueprint(results_bp)
 
 
 # ============================================================
@@ -168,6 +171,8 @@ def user_register():
         ""
     ).strip()
 
+    university_role = request.form.get("university_role", "STUDENT").upper()
+
     password = request.form.get(
         "password",
         ""
@@ -219,6 +224,10 @@ def user_register():
         return render_template(
             "user/register.html"
         )
+
+    if university_role not in {"STUDENT", "TEACHER"}:
+        flash("Choose a valid university role.", "error")
+        return render_template("user/register.html")
 
     if len(password) < 8:
 
@@ -335,7 +344,8 @@ def user_register():
             password_hash=password_hash,
             role="USER",
             status="PENDING",
-            face_path=face_result["face_path"]
+            face_path=face_result["face_path"],
+            university_role=university_role
         )
 
         log_activity(
@@ -643,9 +653,7 @@ def user_login():
         "success"
     )
 
-    return redirect(
-        url_for("user_dashboard")
-    )
+    return redirect(url_for("results.home"))
 
 
 # ============================================================
@@ -1279,9 +1287,7 @@ def admin_login():
         "success"
     )
 
-    return redirect(
-        url_for("admin_dashboard")
-    )
+    return redirect(url_for("results.home"))
 
 @app.route("/admin/dashboard")
 @login_required

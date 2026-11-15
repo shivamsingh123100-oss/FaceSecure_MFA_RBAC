@@ -73,7 +73,7 @@ Verified Users | FaceSecure
 
                             <td>
                                 <span class="badge badge-role">
-                                    {{ item["role"] }}
+                                {{ item["university_role"] if item["role"] == "USER" else item["role"] }}
                                 </span>
                             </td>
 

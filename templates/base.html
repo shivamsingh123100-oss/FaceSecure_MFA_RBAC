@@ -43,6 +43,8 @@
         href="{{ url_for('static', filename='css/responsive.css') }}"
     >
 
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/results.css') }}">
+
     {% block extra_css %}{% endblock %}
 
 </head>
@@ -75,6 +77,8 @@
 
                     {% if current_role == "ADMIN" %}
 
+                        <a href="{{ url_for('results.admin_dashboard') }}">Results</a>
+
                         <a href="{{ url_for('admin_dashboard') }}">
                             Dashboard
                         </a>
@@ -92,6 +96,8 @@
                         </a>
 
                     {% elif current_role == "USER" %}
+
+                        <a href="{{ url_for('results.home') }}">Results</a>
 
                         <a href="{{ url_for('user_dashboard') }}">
                             Dashboard

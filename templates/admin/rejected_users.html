@@ -72,7 +72,7 @@ Rejected Users | FaceSecure
                             </td>
 
                             <td>
-                                {{ item["role"] }}
+                                {{ item["university_role"] if item["role"] == "USER" else item["role"] }}
                             </td>
 
                             <td>

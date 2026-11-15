@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}My Results | FaceSecure University{% endblock %}
+{% block content %}
+<section class="dashboard-page"><div class="container">
+    <div class="dashboard-header"><div><span class="eyebrow">STUDENT PORTAL</span><h1>My results</h1><p>Only results released by your teachers appear here.</p></div><div class="dashboard-status"><span class="status-dot"></span>STUDENT</div></div>
+    <div class="content-card"><div class="card-header"><div><span class="eyebrow">ACADEMIC RECORD</span><h2>Published grades</h2></div><span class="badge">{{ results|length }} courses</span></div>
+    {% if results %}<div class="table-wrapper"><table class="data-table"><thead><tr><th>Course</th><th>Term</th><th>Score</th><th>Grade</th><th>Released</th></tr></thead><tbody>
+    {% for item in results %}<tr><td><strong>{{ item["code"] }}</strong><br>{{ item["name"] }}</td><td>{{ item["term"] }}</td><td>{{ "%.1f"|format(item["marks"]) }} / {{ "%.1f"|format(item["max_marks"]) }}</td><td><span class="badge badge-success">{{ item["grade"] }}</span></td><td>{{ item["updated_at"][:10] }}</td></tr>{% endfor %}
+    </tbody></table></div>{% else %}<div class="empty-state"><div class="empty-icon">R</div><h3>No results published yet</h3><p>When your teacher releases a result, it will appear here.</p></div>{% endif %}
+    </div>
+</div></section>
+{% endblock %}

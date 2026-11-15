@@ -1,0 +1,17 @@
+.form-stack { display: grid; gap: 16px; }
+.form-stack label { display: grid; gap: 7px; color: var(--text-secondary, #94a3b8); font-size: 13px; }
+.form-stack input, .form-stack select, .data-table input[type="number"] {
+    width: 100%; min-height: 44px; padding: 10px 12px; color: var(--text-primary, #e2e8f0);
+    background: var(--bg-elevated, #111827); border: 1px solid var(--border-light, #334155);
+    border-radius: 10px; font: inherit;
+}
+.form-stack select option { background: #111827; }
+.form-stack .button { justify-content: center; }
+.data-table input[type="number"] { min-width: 105px; max-width: 150px; }
+.camera-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+.content-card + .content-card, .dashboard-grid + .content-card { margin-top: 24px; }
+.badge-success { color: #bbf7d0; background: rgba(34, 197, 94, .14); }
+@media (max-width: 720px) {
+    .dashboard-header { align-items: flex-start; gap: 16px; flex-direction: column; }
+    .camera-actions > * { width: 100%; justify-content: center; }
+}

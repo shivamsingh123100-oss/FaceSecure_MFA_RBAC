@@ -82,6 +82,9 @@ def init_db():
                     )
                 ),
 
+            university_role TEXT NOT NULL DEFAULT 'STUDENT'
+                CHECK (university_role IN ('STUDENT', 'TEACHER')),
+
             face_path TEXT,
 
             created_at TEXT NOT NULL,
@@ -93,6 +96,58 @@ def init_db():
             FOREIGN KEY (verified_by)
                 REFERENCES users(id)
                 ON DELETE SET NULL
+        )
+        """
+    )
+
+    user_columns = {
+        row["name"] for row in db.execute("PRAGMA table_info(users)").fetchall()
+    }
+    if "university_role" not in user_columns:
+        db.execute(
+            "ALTER TABLE users ADD COLUMN university_role TEXT NOT NULL DEFAULT 'STUDENT' "
+            "CHECK (university_role IN ('STUDENT', 'TEACHER'))"
+        )
+
+    db.execute(
+        """
+        CREATE TABLE IF NOT EXISTS courses (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            code TEXT NOT NULL UNIQUE,
+            name TEXT NOT NULL,
+            term TEXT NOT NULL,
+            teacher_id INTEGER NOT NULL,
+            max_marks REAL NOT NULL DEFAULT 100,
+            created_at TEXT NOT NULL,
+            FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE RESTRICT
+        )
+        """
+    )
+    db.execute(
+        """
+        CREATE TABLE IF NOT EXISTS enrollments (
+            course_id INTEGER NOT NULL,
+            student_id INTEGER NOT NULL,
+            created_at TEXT NOT NULL,
+            PRIMARY KEY (course_id, student_id),
+            FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE,
+            FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE
+        )
+        """
+    )
+    db.execute(
+        """
+        CREATE TABLE IF NOT EXISTS results (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            course_id INTEGER NOT NULL,
+            student_id INTEGER NOT NULL,
+            marks REAL NOT NULL,
+            grade TEXT NOT NULL,
+            status TEXT NOT NULL DEFAULT 'DRAFT' CHECK (status IN ('DRAFT', 'PUBLISHED')),
+            updated_at TEXT NOT NULL,
+            UNIQUE (course_id, student_id),
+            FOREIGN KEY (course_id, student_id)
+                REFERENCES enrollments(course_id, student_id) ON DELETE CASCADE
         )
         """
     )
@@ -204,7 +259,8 @@ def create_user(
     password_hash,
     role,
     status,
-    face_path
+    face_path,
+    university_role="STUDENT"
 ):
     """
     Create a new user or administrator account.
@@ -220,10 +276,11 @@ def create_user(
             password_hash,
             role,
             status,
+            university_role,
             face_path,
             created_at
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             username,
@@ -231,6 +288,7 @@ def create_user(
             password_hash,
             role,
             status,
+            university_role,
             face_path,
             get_current_timestamp()
         )
@@ -422,6 +480,7 @@ def get_all_users():
             full_name,
             role,
             status,
+            university_role,
             face_path,
             created_at,
             verified_at,
@@ -449,6 +508,7 @@ def get_users_by_status(status):
             full_name,
             role,
             status,
+            university_role,
             face_path,
             created_at,
             verified_at,
@@ -479,6 +539,7 @@ def get_users_by_role(role):
             full_name,
             role,
             status,
+            university_role,
             face_path,
             created_at,
             verified_at,

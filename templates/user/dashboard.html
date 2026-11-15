@@ -15,7 +15,7 @@
             <div>
 
                 <span class="eyebrow">
-                    USER DASHBOARD
+                    {{ user["university_role"] }} DASHBOARD
                 </span>
 
                 <h1>
@@ -92,7 +92,7 @@
                 </span>
 
                 <h3>
-                    USER
+                    {{ user["university_role"] }}
                 </h3>
 
                 <p>
@@ -126,6 +126,8 @@
                 >
                     View Profile
                 </a>
+
+                <a href="{{ url_for('results.home') }}" class="button button-primary">Open Results Portal</a>
 
             </div>
 

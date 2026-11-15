@@ -71,7 +71,7 @@ Pending Verification | FaceSecure
 
                     <div>
                         <span>Role</span>
-                        <strong>{{ item["role"] }}</strong>
+                        <strong>{{ item["university_role"] if item["role"] == "USER" else item["role"] }}</strong>
                     </div>
 
                     <div>

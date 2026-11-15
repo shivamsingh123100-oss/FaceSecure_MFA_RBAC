@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Teacher Portal | FaceSecure University{% endblock %}
+{% block content %}
+<section class="dashboard-page"><div class="container">
+    <div class="dashboard-header"><div><span class="eyebrow">TEACHER PORTAL</span><h1>Welcome, {{ user["full_name"] }}</h1><p>Manage your course marks and release results to students.</p></div><div class="dashboard-status"><span class="status-dot"></span>TEACHER</div></div>
+    <div class="content-card"><div class="card-header"><div><span class="eyebrow">MY COURSES</span><h2>Assigned courses</h2></div><span class="badge">{{ courses|length }} courses</span></div>
+    {% if courses %}<div class="table-wrapper"><table class="data-table"><thead><tr><th>Course</th><th>Term</th><th>Students</th><th>Marks</th><th></th></tr></thead><tbody>
+    {% for course in courses %}<tr><td><strong>{{ course["code"] }}</strong><br>{{ course["name"] }}</td><td>{{ course["term"] }}</td><td>{{ course["student_count"] }}</td><td>Out of {{ "%.1f"|format(course["max_marks"]) }}</td><td><a class="table-action" href="{{ url_for('results.teacher_course', course_id=course['id']) }}">Open gradebook</a></td></tr>{% endfor %}
+    </tbody></table></div>{% else %}<div class="empty-state"><h3>No courses assigned</h3><p>Ask your university administrator to assign a course to your verified teacher account.</p></div>{% endif %}
+    </div>
+</div></section>
+{% endblock %}

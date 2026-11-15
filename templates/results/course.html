@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Gradebook | {{ course["code"] }}{% endblock %}
+{% block content %}
+<section class="dashboard-page"><div class="container">
+    <div class="dashboard-header"><div><span class="eyebrow">TEACHER GRADEBOOK</span><h1>{{ course["code"] }} · {{ course["name"] }}</h1><p>{{ course["term"] }} · Marks are out of {{ "%.1f"|format(course["max_marks"]) }}. Students see grades only after publication.</p></div><a class="button button-secondary" href="{{ url_for('results.teacher_dashboard') }}">My courses</a></div>
+    <div class="content-card"><form method="POST"><input type="hidden" name="csrf_token" value="{{ results_csrf_token() }}">
+    {% if roster %}<div class="table-wrapper"><table class="data-table"><thead><tr><th>Student</th><th>Username</th><th>Mark</th><th>Current grade</th><th>Status</th></tr></thead><tbody>
+    {% for student in roster %}<tr><td><strong>{{ student["full_name"] }}</strong></td><td>{{ student["username"] }}</td><td><input type="number" name="marks_{{ student['id'] }}" min="0" max="{{ course['max_marks'] }}" step="0.01" value="{{ student['marks'] if student['marks'] is not none else '' }}" required></td><td>{{ student["grade"] or "—" }}</td><td>{{ student["status"] or "Not entered" }}</td></tr>{% endfor %}
+    </tbody></table></div><div class="camera-actions"><button type="submit" name="action" value="draft" class="button button-secondary">Save draft</button><button type="submit" name="action" value="publish" class="button button-primary">Publish results</button></div>
+    {% else %}<div class="empty-state"><h3>No students enrolled</h3><p>Your administrator needs to enroll students before you can enter marks.</p></div>{% endif %}
+    </form></div>
+</div></section>
+{% endblock %}
