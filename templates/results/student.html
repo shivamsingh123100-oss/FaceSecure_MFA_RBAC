@@ -12,24 +12,31 @@
       <div class="results-hero-mark" aria-hidden="true">R</div>
     </div>
 
-    <div class="results-summary-grid">
-      <article class="results-summary-card"><span class="summary-icon">▤</span><div><span>Published courses</span><strong>{{ results|length }}</strong></div></article>
-      <article class="results-summary-card"><span class="summary-icon summary-icon-green">✓</span><div><span>Account access</span><strong>Face verified</strong></div></article>
+    <div class="student-actions-bar">
+      <div><span class="eyebrow">YOUR LEARNING SPACE</span><strong>Everything you need for your academic record.</strong></div>
+      <div class="student-action-buttons"><a href="{{ url_for('user_dashboard') }}" class="button button-hero-secondary">Account dashboard</a>{% if results %}<button type="button" class="button button-primary" data-download-results>Download results <span aria-hidden="true">↓</span></button><button type="button" class="button button-secondary" data-print-results>Print <span aria-hidden="true">↗</span></button>{% endif %}</div>
+    </div>
+
+    <div class="results-summary-grid student-summary-grid">
+      <article class="results-summary-card"><span class="summary-icon">▤</span><div><span>Published results</span><strong>{{ results|length }} {{ 'course' if results|length == 1 else 'courses' }}</strong></div></article>
+      <article class="results-summary-card"><span class="summary-icon summary-icon-green">✓</span><div><span>Enrolled courses</span><strong>{{ enrolled_count }} {{ 'course' if enrolled_count == 1 else 'courses' }}</strong></div></article>
+      <article class="results-summary-card"><span class="summary-icon summary-icon-violet">◷</span><div><span>Awaiting release</span><strong>{{ waiting_count }} {{ 'result' if waiting_count == 1 else 'results' }}</strong></div></article>
     </div>
 
     <div class="content-card results-card">
       <div class="card-header results-card-header">
-        <div><span class="eyebrow">ACADEMIC RECORD</span><h2>Published grades</h2><p>Grades become visible after your teacher releases them.</p></div>
+        <div><span class="eyebrow">ACADEMIC RECORD</span><h2>Published grades</h2><p>Your official course results, released by your teachers.</p></div>
         <span class="badge results-count">{{ results|length }} {{ 'course' if results|length == 1 else 'courses' }}</span>
       </div>
       {% if results %}
-        <div class="table-wrapper results-table-wrap"><table class="data-table results-table"><thead><tr><th>Course</th><th>Term</th><th>Score</th><th>Grade</th><th>Released</th></tr></thead><tbody>
+        <div class="table-wrapper results-table-wrap"><table class="data-table results-table" data-student-results><thead><tr><th>Course</th><th>Term</th><th>Score</th><th>Grade</th><th>Released</th></tr></thead><tbody>
         {% for item in results %}<tr><td><strong>{{ item["code"] }}</strong><span class="cell-subtitle">{{ item["name"] }}</span></td><td>{{ item["term"] }}</td><td><span class="score-value">{{ "%.1f"|format(item["marks"]) }}</span><span class="score-max">/ {{ "%.1f"|format(item["max_marks"]) }}</span></td><td><span class="grade-pill">{{ item["grade"] }}</span></td><td>{{ item["updated_at"][:10] }}</td></tr>{% endfor %}
         </tbody></table></div>
       {% else %}
-        <div class="empty-state results-empty"><div class="empty-icon">▤</div><h3>Your results will appear here</h3><p>There are no published grades yet. Check back after your teacher releases results.</p></div>
+        <div class="empty-state results-empty student-empty"><div class="empty-illustration" aria-hidden="true"><span>▤</span><i></i><i></i><i></i></div><span class="eyebrow">NO RESULTS RELEASED</span><h3>{% if waiting_count %}Your teacher is preparing your results{% else %}Your academic record starts here{% endif %}</h3><p>{% if waiting_count %}You are enrolled in {{ enrolled_count }} course{% if enrolled_count != 1 %}s{% endif %}. Draft grades stay private until your teacher publishes them.{% elif enrolled_count %}You are enrolled in {{ enrolled_count }} course{% if enrolled_count != 1 %}s{% endif %}. Published grades will appear here when they are released.{% else %}You do not have a course enrollment yet. Your university administrator can add you to a course.{% endif %}</p><a href="{{ url_for('user_dashboard') }}" class="button button-primary">Go to my dashboard <span aria-hidden="true">→</span></a></div>
       {% endif %}
     </div>
   </div>
 </section>
 {% endblock %}
+{% block extra_js %}<script src="{{ url_for('static', filename='js/portal-actions.js') }}" defer></script>{% endblock %}

@@ -101,8 +101,8 @@
                 <div class="form-group">
                     <label for="university_role">University role</label>
                     <select id="university_role" name="university_role" required>
-                        <option value="STUDENT">Student</option>
-                        <option value="TEACHER">Teacher</option>
+                        <option value="STUDENT" {% if request.args.get('university_role', 'STUDENT')|upper == 'STUDENT' %}selected{% endif %}>Student</option>
+                        <option value="TEACHER" {% if request.args.get('university_role', '')|upper == 'TEACHER' %}selected{% endif %}>Teacher</option>
                     </select>
                     <small>Teacher accounts need administrator verification before course access.</small>
                 </div>

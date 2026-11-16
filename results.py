@@ -75,7 +75,22 @@ def student_dashboard():
         """,
         (user["id"],),
     ).fetchall()
-    return render_template("results/student.html", user=user, results=results)
+    db = get_db()
+    enrolled_count = db.execute(
+        "SELECT COUNT(*) FROM enrollments WHERE student_id = ?",
+        (user["id"],),
+    ).fetchone()[0]
+    waiting_count = db.execute(
+        "SELECT COUNT(*) FROM results WHERE student_id = ? AND status = 'DRAFT'",
+        (user["id"],),
+    ).fetchone()[0]
+    return render_template(
+        "results/student.html",
+        user=user,
+        results=results,
+        enrolled_count=enrolled_count,
+        waiting_count=waiting_count,
+    )
 
 
 @results_bp.route("/results/teacher")
@@ -228,14 +243,17 @@ def admin_dashboard():
             if not student or not course:
                 flash("Choose a verified student and a valid course.", "error")
             else:
-                db.execute(
+                cursor = db.execute(
                     "INSERT OR IGNORE INTO enrollments (course_id, student_id, created_at) VALUES (?, ?, ?)",
                     (course_id, student_id, datetime.now(timezone.utc).isoformat()),
                 )
                 db.commit()
-                admin = get_current_user()
-                log_activity(username=admin["username"], role="ADMIN", action="STUDENT_ENROLLED", status="SUCCESS", user_id=admin["id"])
-                flash("Student enrolled in the course.", "success")
+                if cursor.rowcount:
+                    admin = get_current_user()
+                    log_activity(username=admin["username"], role="ADMIN", action="STUDENT_ENROLLED", status="SUCCESS", user_id=admin["id"])
+                    flash("Student enrolled in the course.", "success")
+                else:
+                    flash("That student is already enrolled in this course.", "info")
         return redirect(url_for("results.admin_dashboard"))
 
     teachers = db.execute(

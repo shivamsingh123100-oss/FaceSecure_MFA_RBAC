@@ -11,7 +11,7 @@
 
     <meta
         name="description"
-        content="FaceSecure Multi-Factor Authentication and Role-Based Access Control"
+        content="Secure university access for student results, teacher gradebooks, and academic administration."
     >
 
     <title>
@@ -46,6 +46,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/results.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/results-forms.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/results-data.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/experience.css') }}?v=20261116b">
 
     {% block extra_css %}{% endblock %}
 
@@ -62,7 +63,7 @@
                 class="brand"
             >
                 <span class="brand-mark">F</span>
-                <span>FaceSecure</span>
+                <span class="brand-wordmark"><strong>FaceSecure</strong><small>UNIVERSITY PORTAL</small></span>
             </a>
 
             <nav class="main-nav" id="mainNavigation">
@@ -192,13 +193,13 @@
             <div>
                 <strong>FaceSecure</strong>
                 <p>
-                    Multi-Factor Authentication & RBAC
+                    Secure access to academic results
                 </p>
             </div>
 
             <div>
                 <span>
-                    Secure Access Control System
+                    For students, teachers, and administrators
                 </span>
             </div>
 

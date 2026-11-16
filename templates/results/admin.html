@@ -3,11 +3,17 @@
 {% block content %}
 <section class="dashboard-page results-page">
   <div class="container">
-    <div class="results-hero admin-hero"><div class="results-hero-copy"><span class="eyebrow">UNIVERSITY RESULTS</span><h1>Academic administration</h1><p>Set up courses, assign verified teachers, and enroll verified students.</p></div><div class="results-hero-mark" aria-hidden="true">A</div></div>
+    <div class="results-hero admin-hero"><div class="results-hero-copy"><span class="eyebrow">UNIVERSITY RESULTS · ADMINISTRATION</span><h1>Build your academic workspace</h1><p>Set up courses, connect verified teachers, and give students a clear path to their published results.</p><div class="admin-hero-actions"><a class="button button-primary" href="#course-setup">Create a course <span aria-hidden="true">→</span></a><a class="button button-hero-secondary" href="{{ url_for('admin_pending_users') }}">Review accounts</a></div></div><div class="results-hero-mark admin-mark" aria-hidden="true">A</div></div>
+
+    <div class="admin-overview" aria-label="Academic setup overview">
+      <article><span class="overview-icon">01</span><div><strong>{{ courses|length }}</strong><span>Courses created</span></div></article>
+      <article><span class="overview-icon overview-icon-teal">02</span><div><strong>{{ teachers|length }}</strong><span>Verified teachers</span></div></article>
+      <article><span class="overview-icon overview-icon-violet">03</span><div><strong>{{ students|length }}</strong><span>Verified students</span></div></article>
+    </div>
 
     <div class="results-admin-grid">
-      <article class="content-card results-card results-form-card">
-        <div class="card-header results-card-header"><div><span class="eyebrow">01 · COURSE SETUP</span><h2>Create a course</h2><p>Assign a verified teacher to a new course.</p></div><span class="form-step-icon">＋</span></div>
+      <article class="content-card results-card results-form-card" id="course-setup">
+        <div class="card-header results-card-header"><div><span class="eyebrow">01 · COURSE SETUP</span><h2>Create a course</h2><p>Assign a verified teacher to a new course.</p></div><span class="form-step-icon" aria-hidden="true">01</span></div>
         {% if teachers %}<form method="POST" class="results-form" data-results-form><input type="hidden" name="csrf_token" value="{{ results_csrf_token() }}"><input type="hidden" name="action" value="course">
           <label for="course-code">Course code<input id="course-code" name="code" maxlength="24" required placeholder="CS101" autocomplete="off"></label>
           <label for="course-name">Course name<input id="course-name" name="name" required placeholder="Introduction to Computing"></label>
@@ -15,16 +21,16 @@
           <label for="course-max">Maximum marks<input id="course-max" name="max_marks" type="number" min="1" step="0.01" value="100" required></label>
           <label for="course-teacher">Verified teacher<select id="course-teacher" name="teacher_id" required><option value="">Choose a teacher</option>{% for teacher in teachers %}<option value="{{ teacher['id'] }}">{{ teacher['full_name'] }} · {{ teacher['username'] }}</option>{% endfor %}</select></label>
           <button class="button button-primary results-submit" type="submit" data-submit-state="Creating course…"><span>Create course</span><span aria-hidden="true">→</span></button>
-        </form>{% else %}<div class="results-notice"><strong>No verified teachers yet</strong><p>Verify a teacher account in User Management before creating a course.</p><a href="{{ url_for('admin_pending_users') }}" class="text-link">Review pending accounts →</a></div>{% endif %}
+        </form>{% else %}<div class="results-notice results-notice-action"><span class="notice-symbol" aria-hidden="true">!</span><div><strong>One step before course setup</strong><p>Register a teacher, then approve their account here. The course form will be ready as soon as their account is verified.</p><div class="notice-actions"><a class="button button-primary button-small" href="{{ url_for('user_register') }}?university_role=TEACHER">Register a teacher <span aria-hidden="true">→</span></a><a href="{{ url_for('admin_pending_users') }}" class="text-link">Review pending accounts</a></div></div></div>{% endif %}
       </article>
 
       <article class="content-card results-card results-form-card">
-        <div class="card-header results-card-header"><div><span class="eyebrow">02 · ENROLLMENT</span><h2>Enroll a student</h2><p>Add a verified student to a course roster.</p></div><span class="form-step-icon form-step-green">＋</span></div>
+        <div class="card-header results-card-header"><div><span class="eyebrow">02 · ENROLLMENT</span><h2>Enroll a student</h2><p>Add a verified student to a course roster.</p></div><span class="form-step-icon form-step-green" aria-hidden="true">02</span></div>
         {% if students and courses %}<form method="POST" class="results-form" data-results-form><input type="hidden" name="csrf_token" value="{{ results_csrf_token() }}"><input type="hidden" name="action" value="enroll">
           <label for="enroll-course">Course<select id="enroll-course" name="course_id" required><option value="">Choose a course</option>{% for course in courses %}<option value="{{ course['id'] }}">{{ course['code'] }} · {{ course['name'] }}</option>{% endfor %}</select></label>
           <label for="enroll-student">Verified student<select id="enroll-student" name="student_id" required><option value="">Choose a student</option>{% for student in students %}<option value="{{ student['id'] }}">{{ student['full_name'] }} · {{ student['username'] }}</option>{% endfor %}</select></label>
           <button class="button button-primary results-submit" type="submit" data-submit-state="Enrolling student…"><span>Enroll student</span><span aria-hidden="true">→</span></button>
-        </form>{% else %}<div class="results-notice"><strong>Enrollment is almost ready</strong><p>Verified students and at least one created course are needed before you can enroll.</p><a href="{{ url_for('admin_pending_users') }}" class="text-link">Review accounts →</a></div>{% endif %}
+        </form>{% else %}<div class="results-notice results-notice-action"><span class="notice-symbol notice-symbol-teal" aria-hidden="true">i</span><div><strong>Enrollment needs a course and a verified student</strong><p>{% if not courses and not students %}Create a course and register a student, then approve their account.{% elif not courses %}Create your first course after a teacher is verified.{% else %}Register a student and approve their account to add them to a course.{% endif %}</p><div class="notice-actions">{% if not students %}<a class="button button-secondary button-small" href="{{ url_for('user_register') }}?university_role=STUDENT">Register a student <span aria-hidden="true">→</span></a>{% endif %}<a href="{{ url_for('admin_pending_users') }}" class="text-link">Review accounts</a></div></div></div>{% endif %}
       </article>
     </div>
 
