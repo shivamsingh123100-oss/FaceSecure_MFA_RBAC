@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Face verification | FaceSecure University{% endblock %}
+{% block content %}
+<section class="capture-info-page">
+  <div class="container capture-info-container">
+    <div class="capture-info-card">
+      <div class="capture-info-illustration" aria-hidden="true"><span>◎</span><i></i><i></i></div>
+      <span class="eyebrow">FACESECURE · ACCOUNT PROTECTION</span>
+      <h1>Face verification happens when you sign in.</h1>
+      <p>Your registered face is checked alongside your password to protect your results and account. To verify again, start a fresh secure sign in.</p>
+      <div class="capture-info-steps"><div><span>01</span><strong>Open your portal</strong></div><div><span>02</span><strong>Enter your password</strong></div><div><span>03</span><strong>Allow camera access</strong></div></div>
+      <div class="capture-info-actions"><a href="{{ url_for('user_login') }}" class="button button-primary">Go to secure sign in <span aria-hidden="true">→</span></a><a href="{{ url_for('results.home') }}" class="capture-info-link">Return to my portal</a></div>
+    </div>
+  </div>
+</section>
+{% endblock %}

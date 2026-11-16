@@ -1,0 +1,49 @@
+/* Registration and administrator authentication pages */
+.auth-page:not(.fs-login-page) {
+  min-height: calc(100vh - 76px);
+  padding: 48px 0 74px;
+  background: radial-gradient(ellipse at 10% 0%, rgba(66,111,224,.15), transparent 34rem), radial-gradient(ellipse at 94% 45%, rgba(25,157,140,.09), transparent 28rem), #f1f5fb;
+}
+.auth-page:not(.fs-login-page) .auth-container, .auth-page:not(.fs-login-page) .registration-layout { max-width: 1060px; }
+.auth-page:not(.fs-login-page) .auth-heading { max-width: 760px; margin: 0 auto 28px; }
+.auth-page:not(.fs-login-page) .auth-heading h1 { margin: 8px 0 9px; color: #13243d; font-size: clamp(32px, 4.6vw, 47px); letter-spacing: -.055em; }
+.auth-page:not(.fs-login-page) .auth-heading p { color: #596a82; font-size: 14px; line-height: 1.75; }
+.auth-page:not(.fs-login-page) .auth-card { padding: clamp(22px, 3.2vw, 32px); border: 1px solid #dce5f0; border-radius: 20px; background: rgba(255,255,255,.95); box-shadow: 0 16px 42px rgba(24,47,82,.075); }
+.auth-page:not(.fs-login-page) .auth-card .card-header { margin-bottom: 21px; padding-bottom: 16px; border-bottom: 1px solid #e9eef5; }
+.auth-page:not(.fs-login-page) .auth-card .card-header h2 { margin: 0 0 4px; color: #182b46; font-size: 20px; letter-spacing: -.035em; }
+.auth-page:not(.fs-login-page) .auth-card .card-header p { margin: 0; color: #66778e; font-size: 11px; }
+.auth-page:not(.fs-login-page) .form-group { margin-bottom: 17px; }
+.auth-page:not(.fs-login-page) .form-group label { display: block; margin-bottom: 7px; color: #263a56; font-size: 11px; font-weight: 800; }
+.auth-page:not(.fs-login-page) .form-group input, .auth-page:not(.fs-login-page) .form-group select { width: 100%; min-height: 46px; padding: 0 13px; border: 1px solid #dce4ee; border-radius: 11px; color: #1e304a; background: #fafbfd; font-size: 12px; outline: none; transition: border .15s ease, box-shadow .15s ease, background .15s ease; }
+.auth-page:not(.fs-login-page) .form-group input::placeholder { color: #97a3b5; }
+.auth-page:not(.fs-login-page) .form-group input:focus, .auth-page:not(.fs-login-page) .form-group select:focus { border-color: #84a2ec; background: #fff; box-shadow: 0 0 0 4px rgba(49,95,232,.11); }
+.auth-page:not(.fs-login-page) .form-group small { display: block; margin-top: 7px; color: #6d7d92; font-size: 10px; line-height: 1.6; }
+.auth-page:not(.fs-login-page) .registration-grid { gap: 18px; }
+.auth-page:not(.fs-login-page) .registration-grid .auth-card { min-width: 0; }
+.auth-page:not(.fs-login-page) .password-field { overflow: hidden; border: 1px solid #dce4ee; border-radius: 11px; background: #fafbfd; }
+.auth-page:not(.fs-login-page) .password-field:focus-within { border-color: #84a2ec; box-shadow: 0 0 0 4px rgba(49,95,232,.11); }
+.auth-page:not(.fs-login-page) .password-field input { min-width: 0; border: 0; background: transparent; box-shadow: none; }
+.auth-page:not(.fs-login-page) .password-toggle { margin-right: 6px; padding: 7px 10px; border: 0; border-radius: 8px; color: #3e5da8; background: #edf2ff; font-size: 10px; font-weight: 800; }
+.auth-page:not(.fs-login-page) .camera-container { position: relative; min-height: 245px; aspect-ratio: 4 / 3; overflow: hidden; border: 1px solid #d8e1ed; border-radius: 17px; background: radial-gradient(ellipse at 50% 18%, #334864, #122238 72%); box-shadow: inset 0 0 45px rgba(0,0,0,.2); }
+.auth-page:not(.fs-login-page) .camera-video { width: 100%; height: 100%; object-fit: cover; }
+.auth-page:not(.fs-login-page) .camera-overlay { display: grid; place-items: center; padding: 18px; color: #edf3ff; background: linear-gradient(180deg,rgba(12,25,43,.2),rgba(12,25,43,.72)); font-size: 11px; font-weight: 650; text-align: center; }
+.auth-page:not(.fs-login-page) .face-frame { width: min(55%, 170px); height: 76%; border: 1.5px solid rgba(164,202,255,.82); border-radius: 46% 46% 42% 42%; box-shadow: 0 0 0 999px rgba(12,23,40,.15), 0 0 24px rgba(67,139,255,.22); }
+.auth-page:not(.fs-login-page) .camera-actions { display: flex; gap: 9px; margin-top: 12px; }
+.auth-page:not(.fs-login-page) .camera-actions .button { flex: 1; min-height: 42px; border-radius: 10px; font-size: 11px; font-weight: 800; }
+.auth-page:not(.fs-login-page) .capture-status { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding: 10px 12px; border: 1px solid #e1e9f2; border-radius: 10px; color: #586b84; background: #f7f9fc; font-size: 10px; }
+.auth-page:not(.fs-login-page) .admin-badge { display: table; margin: 0 auto 20px; padding: 8px 13px; border: 1px solid #e1dcf6; border-radius: 999px; color: #6550b5; background: #f4f1ff; font-size: 9px; font-weight: 900; letter-spacing: .12em; }
+.auth-page.admin-auth-page:not(.fs-login-page) .auth-container { max-width: 570px; padding: 30px clamp(22px, 4vw, 38px); border: 1px solid #dce5f0; border-radius: 22px; background: rgba(255,255,255,.94); box-shadow: 0 20px 54px rgba(24,47,82,.1); }
+.auth-page:not(.fs-login-page) .auth-bottom-link { margin-top: 19px; color: #62738a; font-size: 11px; text-align: center; }
+.auth-page:not(.fs-login-page) .auth-bottom-link a { color: #315dcf; font-weight: 800; }
+.auth-page:not(.fs-login-page) .auth-bottom-link a:hover { text-decoration: underline; }
+.auth-page:not(.fs-login-page) .button { min-height: 45px; border-radius: 11px; font-size: 12px; font-weight: 800; }
+.auth-page:not(.fs-login-page) .button-primary { color: #fff; background: linear-gradient(135deg,#3d70ed,#2c54d1); box-shadow: 0 10px 21px rgba(49,95,232,.19); }
+.auth-page:not(.fs-login-page) .button-dark { color: #fff; background: #142641; }
+.auth-page:not(.fs-login-page) .button-secondary { color: #2e4b70; border: 1px solid #d7e1ed; background: #fff; }
+.auth-page:not(.fs-login-page) .password-strength { height: 5px; margin-top: 9px; overflow: hidden; border-radius: 999px; background: #edf0f5; }
+.auth-page:not(.fs-login-page) .password-strength-bar { height: 100%; border-radius: inherit; background: linear-gradient(90deg,#e8aa3e,#20a67d); }
+@media (max-width: 760px) {
+  .auth-page:not(.fs-login-page) { padding: 28px 0 48px; }
+  .auth-page:not(.fs-login-page) .registration-grid { grid-template-columns: 1fr; }
+  .auth-page:not(.fs-login-page) .camera-container { min-height: 210px; }
+}
