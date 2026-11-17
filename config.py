@@ -62,6 +62,12 @@ class Config:
             str(BASE_DIR / "facesecure.db")
         )
     )
+    DATABASE_URL = os.getenv("DATABASE_URL")
+
+    if APP_ENV == "production" and not DATABASE_URL:
+        raise RuntimeError(
+            "DATABASE_URL must point to persistent PostgreSQL storage in production."
+        )
 
 
     # =====================================================
@@ -119,3 +125,4 @@ class Config:
             parents=True,
             exist_ok=True
         )
+
