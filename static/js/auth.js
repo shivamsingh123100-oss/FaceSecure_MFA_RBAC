@@ -1,5 +1,41 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+    const loginRole = document.getElementById("loginRole");
+    const credential = document.getElementById("credential");
+    const credentialLabel = document.querySelector("[data-login-credential-label]");
+    const credentialHelp = document.querySelector("[data-login-credential-help]");
+    const updateLoginCredential = () => {
+        if (!loginRole || !credential) return;
+        const isStudent = loginRole.value === "STUDENT";
+        if (credentialLabel) credentialLabel.textContent = isStudent ? "Student registration number" : "Teacher username";
+        credential.placeholder = isStudent ? "Your university registration number" : "Your teacher username";
+        credential.autocapitalize = isStudent ? "characters" : "none";
+        credential.autocomplete = isStudent ? "off" : "username";
+        if (credentialHelp) credentialHelp.textContent = isStudent
+            ? "Enter the registration number assigned by your university."
+            : "Teacher sign-in continues to use your username.";
+    };
+    if (loginRole) {
+        loginRole.addEventListener("change", updateLoginCredential);
+        updateLoginCredential();
+    }
+
+    const registrationRole = document.getElementById("university_role");
+    const registrationGroup = document.getElementById("studentRegistrationGroup");
+    const registrationNumber = document.getElementById("registration_number");
+    const updateRegistrationCredential = () => {
+        if (!registrationRole || !registrationGroup || !registrationNumber) return;
+        const isStudent = registrationRole.value === "STUDENT";
+        registrationGroup.hidden = !isStudent;
+        registrationNumber.disabled = !isStudent;
+        registrationNumber.required = isStudent;
+        if (!isStudent) registrationNumber.value = "";
+    };
+    if (registrationRole) {
+        registrationRole.addEventListener("change", updateRegistrationCredential);
+        updateRegistrationCredential();
+    }
+
     /*
      * PASSWORD VISIBILITY
      */

@@ -73,6 +73,18 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
+        // Disabled submit buttons are omitted from the submitted form data.
+        // Preserve the chosen action before disabling the button.
+        let actionField = gradebook.querySelector("[data-gradebook-action]");
+        if (!actionField) {
+            actionField = document.createElement("input");
+            actionField.type = "hidden";
+            actionField.name = "action";
+            actionField.dataset.gradebookAction = "";
+            gradebook.append(actionField);
+        }
+        actionField.value = submitter.value;
+
         submitter.disabled = true;
         submitter.textContent = submitter.dataset.submitState || (submitter.value === "publish" ? "Publishing…" : "Saving draft…");
     });

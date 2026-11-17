@@ -21,6 +21,7 @@
 
 {% block content %}
 
+{% set selected_role = request.form.get('university_role', request.args.get('university_role', 'STUDENT'))|upper %}
 <section class="auth-page">
 
     <div class="container registration-layout">
@@ -101,10 +102,16 @@
                 <div class="form-group">
                     <label for="university_role">University role</label>
                     <select id="university_role" name="university_role" required>
-                        <option value="STUDENT" {% if request.args.get('university_role', 'STUDENT')|upper == 'STUDENT' %}selected{% endif %}>Student</option>
-                        <option value="TEACHER" {% if request.args.get('university_role', '')|upper == 'TEACHER' %}selected{% endif %}>Teacher</option>
+                        <option value="STUDENT" {% if selected_role == 'STUDENT' %}selected{% endif %}>Student</option>
+                        <option value="TEACHER" {% if selected_role == 'TEACHER' %}selected{% endif %}>Teacher</option>
                     </select>
                     <small>Teacher accounts need administrator verification before course access.</small>
+                </div>
+
+                <div class="form-group" id="studentRegistrationGroup" {% if selected_role != 'STUDENT' %}hidden{% endif %}>
+                    <label for="registration_number">Student registration number</label>
+                    <input type="text" id="registration_number" name="registration_number" value="{{ request.form.get('registration_number', '') }}" placeholder="e.g. 2025-CS-1042" minlength="3" maxlength="32" pattern="[A-Za-z0-9][A-Za-z0-9/_-]{2,31}" autocomplete="off" autocapitalize="characters" {% if selected_role == 'STUDENT' %}required{% else %}disabled{% endif %}>
+                    <small>Students use this number to sign in. Teachers do not need one.</small>
                 </div>
 
 

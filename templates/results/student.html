@@ -8,6 +8,7 @@
         <span class="eyebrow">STUDENT PORTAL</span>
         <h1>Your academic results</h1>
         <p>Welcome back, {{ user["full_name"] }}. Your released grades and course attendance are together in your secure record.</p>
+        <span class="badge results-count">Student registration no. · {{ user["registration_number"] or "Not assigned—contact your administrator" }}</span>
       </div>
       <div class="results-hero-mark" aria-hidden="true">R</div>
     </div>
