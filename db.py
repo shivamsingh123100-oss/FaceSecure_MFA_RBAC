@@ -130,6 +130,8 @@ def init_db():
 
             face_path TEXT,
 
+            face_encoding TEXT,
+
             created_at TEXT NOT NULL,
 
             verified_at TEXT,
@@ -158,6 +160,8 @@ def init_db():
             "ALTER TABLE users ADD COLUMN university_role TEXT NOT NULL DEFAULT 'STUDENT' "
             "CHECK (university_role IN ('STUDENT', 'TEACHER'))"
         )
+    if "face_encoding" not in user_columns:
+        db.execute("ALTER TABLE users ADD COLUMN face_encoding TEXT")
 
     db.execute(
         f"""
@@ -352,7 +356,8 @@ def create_user(
     role,
     status,
     face_path,
-    university_role="STUDENT"
+    university_role="STUDENT",
+    face_encoding=None,
 ):
     """
     Create a new user or administrator account.
@@ -370,9 +375,10 @@ def create_user(
             status,
             university_role,
             face_path,
+            face_encoding,
             created_at
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         {"RETURNING id" if db.is_postgres else ""}
         """,
         (
@@ -383,6 +389,7 @@ def create_user(
             status,
             university_role,
             face_path,
+            face_encoding,
             get_current_timestamp()
         )
     )
