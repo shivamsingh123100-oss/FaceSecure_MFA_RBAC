@@ -78,6 +78,12 @@ Pending Verification | FaceSecure
                         <span>Status</span>
                         <strong>{{ item["status"] }}</strong>
                     </div>
+                    {% if item["role"] == "USER" and item["university_role"] == "STUDENT" %}
+                    <div>
+                        <span>Registration no.</span>
+                        <strong>{{ item["registration_number"] or "Assign in User Management" }}</strong>
+                    </div>
+                    {% endif %}
 
                 </div>
 
