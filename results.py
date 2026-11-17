@@ -168,7 +168,7 @@ def teacher_dashboard():
     for course in courses:
         roster = db.execute(
             """
-            SELECT u.id, u.full_name, u.username, r.marks, r.status,
+            SELECT u.id, u.full_name, u.username, u.registration_number, r.marks, r.status,
                 (SELECT SUM(CASE WHEN ar.status IN ('PRESENT', 'LATE') THEN 1 ELSE 0 END)
                  FROM attendance_records ar WHERE ar.course_id = e.course_id AND ar.student_id = e.student_id) AS attended,
                 (SELECT SUM(CASE WHEN ar.status = 'ABSENT' THEN 1 ELSE 0 END)
@@ -204,6 +204,7 @@ def teacher_dashboard():
                 "id": student["id"],
                 "name": student["full_name"],
                 "username": student["username"],
+                "registration_number": student["registration_number"],
                 "mark_rate": mark_rate,
                 "attendance_rate": attendance_rate,
                 "needs_support": needs_support,
@@ -240,14 +241,18 @@ def teacher_course(course_id):
     if request.method == "POST":
         roster = db.execute(
             """
-            SELECT u.id, u.username, u.full_name, r.marks, r.grade, r.status
+            SELECT u.id, u.username, u.registration_number, u.full_name, r.marks, r.grade, r.status
             FROM enrollments e JOIN users u ON u.id = e.student_id
             LEFT JOIN results r ON r.course_id = e.course_id AND r.student_id = e.student_id
             WHERE e.course_id = ? ORDER BY u.full_name
             """,
             (course_id,),
         ).fetchall()
-        publish = request.form.get("action") == "publish"
+        action = request.form.get("action", "").strip().lower()
+        if action not in {"draft", "publish"}:
+            flash("Choose Save draft or Publish results before submitting.", "error")
+            return render_template("results/course.html", user=user, course=course, roster=roster)
+        publish = action == "publish"
         form_marks = {}
         updates = []
         for student in roster:
@@ -299,7 +304,7 @@ def teacher_course(course_id):
 
     roster = db.execute(
         """
-        SELECT u.id, u.username, u.full_name, r.marks, r.grade, r.status
+        SELECT u.id, u.username, u.registration_number, u.full_name, r.marks, r.grade, r.status
         FROM enrollments e JOIN users u ON u.id = e.student_id
         LEFT JOIN results r ON r.course_id = e.course_id AND r.student_id = e.student_id
         WHERE e.course_id = ? ORDER BY u.full_name
@@ -338,7 +343,7 @@ def teacher_attendance(course_id):
 
     roster = db.execute(
         """
-        SELECT u.id, u.username, u.full_name, ar.status, ar.note
+        SELECT u.id, u.username, u.registration_number, u.full_name, ar.status, ar.note
         FROM enrollments e
         JOIN users u ON u.id = e.student_id
         LEFT JOIN attendance_sessions s
@@ -483,7 +488,7 @@ def student_report_pdf():
         Spacer(1, 16),
     ]
     identity = [
-        ["Student", escape(str(user["full_name"])), "Username", escape(str(user["username"]))],
+        ["Student", escape(str(user["full_name"])), "Registration no.", escape(str(user["registration_number"] or "Not assigned"))],
         ["Generated", datetime.now(timezone.utc).strftime("%d %b %Y, %H:%M UTC"), "Courses", str(len(courses))],
     ]
     identity_table = Table(identity, colWidths=[.85 * inch, 2.35 * inch, .85 * inch, 2.4 * inch])
@@ -636,7 +641,7 @@ def admin_dashboard():
         "SELECT id, username, full_name FROM users WHERE role = 'USER' AND university_role = 'TEACHER' AND status = 'VERIFIED' ORDER BY full_name"
     ).fetchall()
     students = db.execute(
-        "SELECT id, username, full_name FROM users WHERE role = 'USER' AND university_role = 'STUDENT' AND status = 'VERIFIED' ORDER BY full_name"
+        "SELECT id, username, full_name, registration_number FROM users WHERE role = 'USER' AND university_role = 'STUDENT' AND status = 'VERIFIED' ORDER BY full_name"
     ).fetchall()
     courses = db.execute(
         "SELECT c.*, u.full_name AS teacher_name, COUNT(e.student_id) AS student_count FROM courses c JOIN users u ON u.id = c.teacher_id LEFT JOIN enrollments e ON e.course_id = c.id GROUP BY c.id, u.full_name ORDER BY c.term DESC, c.code"
