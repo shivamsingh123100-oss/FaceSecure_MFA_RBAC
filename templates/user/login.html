@@ -23,10 +23,19 @@
     <div class="login-panel-wrap">
       <div class="login-panel-heading"><span class="eyebrow">STUDENT &amp; TEACHER PORTAL</span><h2>Welcome back</h2><p>Enter your account details to continue.</p></div>
       <form method="POST" action="{{ url_for('user_login') }}" class="login-panel" id="userLoginForm">
+        {% set login_role = request.form.get('login_role', 'STUDENT')|upper %}
         <div class="login-field form-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" name="username" value="{{ request.form.get('username', '') }}" placeholder="Your username" autocomplete="username" autocapitalize="none" spellcheck="false" required>
-          <small>Usernames are not case sensitive.</small>
+          <label for="loginRole">I am signing in as</label>
+          <select id="loginRole" name="login_role" required>
+            <option value="STUDENT" {% if login_role == 'STUDENT' %}selected{% endif %}>Student</option>
+            <option value="TEACHER" {% if login_role == 'TEACHER' %}selected{% endif %}>Teacher</option>
+          </select>
+          <small>Students use their registration number. Teachers use their username.</small>
+        </div>
+        <div class="login-field form-group">
+          <label for="credential" data-login-credential-label>{{ 'Student registration number' if login_role == 'STUDENT' else 'Teacher username' }}</label>
+          <input type="text" id="credential" name="credential" value="{{ request.form.get('credential', '') }}" placeholder="{{ 'Your university registration number' if login_role == 'STUDENT' else 'Your teacher username' }}" autocomplete="off" autocapitalize="characters" spellcheck="false" required>
+          <small data-login-credential-help>{{ 'Enter the registration number assigned by your university.' if login_role == 'STUDENT' else 'Teacher sign-in continues to use your username.' }}</small>
         </div>
         <div class="login-field form-group">
           <label for="password">Password</label>
