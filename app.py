@@ -1,9 +1,12 @@
 import os
 import json
+import re
+import secrets
 
 
 from flask import (
     Flask,
+    abort,
     flash,
     redirect,
     render_template,
@@ -21,13 +24,16 @@ from db import (
     get_dashboard_statistics,
     get_recent_activity,
     get_user_by_id,
+    get_user_by_registration_number,
     get_user_by_username,
     get_users_by_role,
     get_users_by_status,
     has_verified_admin,
     init_db,
     log_activity,
+    registration_number_exists,
     reject_user,
+    update_student_registration_number,
     username_exists,
     verify_user
 )
@@ -76,6 +82,27 @@ app = Flask(
 app.config.from_object(Config)
 Config.initialize_directories()
 app.register_blueprint(results_bp)
+
+
+def admin_csrf_token():
+    token = session.get("admin_csrf")
+    if not token:
+        token = secrets.token_urlsafe(32)
+        session["admin_csrf"] = token
+    return token
+
+
+@app.context_processor
+def inject_admin_csrf_token():
+    return {"admin_csrf_token": admin_csrf_token}
+
+
+def normalize_registration_number(value):
+    return (value or "").strip().upper()
+
+
+def valid_registration_number(value):
+    return bool(re.fullmatch(r"[A-Z0-9][A-Z0-9/_-]{2,31}", value or ""))
 
 
 # ============================================================
@@ -174,6 +201,9 @@ def user_register():
     ).strip()
 
     university_role = request.form.get("university_role", "STUDENT").upper()
+    registration_number = normalize_registration_number(
+        request.form.get("registration_number", "")
+    )
 
     password = request.form.get(
         "password",
@@ -230,6 +260,16 @@ def user_register():
     if university_role not in {"STUDENT", "TEACHER"}:
         flash("Choose a valid university role.", "error")
         return render_template("user/register.html")
+
+    if university_role == "STUDENT":
+        if not valid_registration_number(registration_number):
+            flash("Enter a valid student registration number (3–32 letters, numbers, /, _ or -).", "error")
+            return render_template("user/register.html")
+        if registration_number_exists(registration_number):
+            flash("That student registration number is already registered.", "error")
+            return render_template("user/register.html")
+    else:
+        registration_number = None
 
     if len(password) < 8:
 
@@ -348,7 +388,8 @@ def user_register():
             status="PENDING",
             face_path=face_result["face_path"],
             university_role=university_role,
-            face_encoding=json.dumps(face_result["encoding"].tolist())
+            face_encoding=json.dumps(face_result["encoding"].tolist()),
+            registration_number=registration_number,
         )
 
         log_activity(
@@ -371,10 +412,16 @@ def user_register():
             "user/register.html"
         )
 
-    flash(
-        "Registration successful. Your account is waiting for admin verification.",
-        "success"
-    )
+    if university_role == "STUDENT":
+        flash(
+            f"Registration successful. Your student registration number is {registration_number}. Save it for sign-in. Your account is waiting for admin verification.",
+            "success",
+        )
+    else:
+        flash(
+            "Registration successful. Your teacher account is waiting for admin verification.",
+            "success",
+        )
 
     return redirect(
         url_for("verification_status")
@@ -406,10 +453,8 @@ def user_login():
             "user/login.html"
         )
 
-    username = request.form.get(
-        "username",
-        ""
-    ).strip()
+    login_role = request.form.get("login_role", "STUDENT").upper()
+    credential = request.form.get("credential", "").strip()
 
     password = request.form.get(
         "password",
@@ -425,14 +470,22 @@ def user_login():
     # FIND USER
     # --------------------------------------------------------
 
-    user = get_user_by_username(
-        username
-    )
+    if login_role == "STUDENT":
+        user = get_user_by_registration_number(normalize_registration_number(credential))
+    elif login_role == "TEACHER":
+        user = get_user_by_username(credential)
+    else:
+        user = None
+
+    if user is not None and (
+        user["role"] != "USER" or user["university_role"] != login_role
+    ):
+        user = None
 
     if user is None:
 
         log_activity(
-            username=username or "UNKNOWN",
+            username=credential or "UNKNOWN",
             role="USER",
             action="USER_LOGIN",
             status="FAILED_USERNAME",
@@ -1381,9 +1434,39 @@ def admin_dashboard():
 # ALL USERS
 # ============================================================
 
-@app.route("/admin/users")
+@app.route("/admin/users", methods=["GET", "POST"])
 @admin_required
 def admin_users():
+
+    if request.method == "POST":
+        supplied_token = request.form.get("csrf_token", "")
+        if not secrets.compare_digest(supplied_token, admin_csrf_token()):
+            abort(400)
+
+        target_id = request.form.get("user_id", type=int)
+        registration_number = normalize_registration_number(
+            request.form.get("registration_number", "")
+        )
+        target = get_user_by_id(target_id) if target_id else None
+
+        if not target or target["role"] != "USER" or target["university_role"] != "STUDENT":
+            flash("Choose a student account to update.", "error")
+        elif not valid_registration_number(registration_number):
+            flash("Enter a valid student registration number (3–32 letters, numbers, /, _ or -).", "error")
+        elif registration_number_exists(registration_number, exclude_user_id=target_id):
+            flash("That student registration number is already assigned.", "error")
+        elif update_student_registration_number(target_id, registration_number):
+            admin = get_current_user()
+            log_activity(
+                username=admin["username"], role="ADMIN",
+                action="STUDENT_REGISTRATION_NUMBER_UPDATED", status="SUCCESS",
+                user_id=admin["id"],
+            )
+            flash(f"Student registration number updated for {target['full_name']}.", "success")
+        else:
+            flash("The student registration number could not be updated.", "error")
+
+        return redirect(url_for("admin_users"))
 
     users = get_all_users()
 
