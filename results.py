@@ -639,7 +639,7 @@ def admin_dashboard():
         "SELECT id, username, full_name FROM users WHERE role = 'USER' AND university_role = 'STUDENT' AND status = 'VERIFIED' ORDER BY full_name"
     ).fetchall()
     courses = db.execute(
-        "SELECT c.*, u.full_name AS teacher_name, COUNT(e.student_id) AS student_count FROM courses c JOIN users u ON u.id = c.teacher_id LEFT JOIN enrollments e ON e.course_id = c.id GROUP BY c.id ORDER BY c.term DESC, c.code"
+        "SELECT c.*, u.full_name AS teacher_name, COUNT(e.student_id) AS student_count FROM courses c JOIN users u ON u.id = c.teacher_id LEFT JOIN enrollments e ON e.course_id = c.id GROUP BY c.id, u.full_name ORDER BY c.term DESC, c.code"
     ).fetchall()
     return render_template("results/admin.html", user=get_current_user(), teachers=teachers, students=students, courses=courses)
 
