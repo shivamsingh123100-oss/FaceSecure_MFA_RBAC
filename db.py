@@ -128,6 +128,8 @@ def init_db():
             university_role TEXT NOT NULL DEFAULT 'STUDENT'
                 CHECK (university_role IN ('STUDENT', 'TEACHER')),
 
+            registration_number TEXT,
+
             face_path TEXT,
 
             face_encoding TEXT,
@@ -162,6 +164,12 @@ def init_db():
         )
     if "face_encoding" not in user_columns:
         db.execute("ALTER TABLE users ADD COLUMN face_encoding TEXT")
+    if "registration_number" not in user_columns:
+        db.execute("ALTER TABLE users ADD COLUMN registration_number TEXT")
+    db.execute(
+        "CREATE UNIQUE INDEX IF NOT EXISTS users_registration_number_unique "
+        "ON users(LOWER(registration_number)) WHERE registration_number IS NOT NULL"
+    )
 
     db.execute(
         f"""
@@ -358,6 +366,7 @@ def create_user(
     face_path,
     university_role="STUDENT",
     face_encoding=None,
+    registration_number=None,
 ):
     """
     Create a new user or administrator account.
@@ -374,11 +383,12 @@ def create_user(
             role,
             status,
             university_role,
+            registration_number,
             face_path,
             face_encoding,
             created_at
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         {"RETURNING id" if db.is_postgres else ""}
         """,
         (
@@ -388,6 +398,7 @@ def create_user(
             role,
             status,
             university_role,
+            registration_number,
             face_path,
             face_encoding,
             get_current_timestamp()
@@ -434,6 +445,39 @@ def get_user_by_username(username):
         """,
         (username,)
     ).fetchone()
+
+
+def get_user_by_registration_number(registration_number):
+    """Find a student by their case-insensitive university ID."""
+    return get_db().execute(
+        """
+        SELECT * FROM users
+        WHERE LOWER(registration_number) = LOWER(?)
+          AND role = 'USER' AND university_role = 'STUDENT'
+        """,
+        (registration_number,),
+    ).fetchone()
+
+
+def registration_number_exists(registration_number, exclude_user_id=None):
+    """Check whether a student ID is already assigned."""
+    query = "SELECT id FROM users WHERE LOWER(registration_number) = LOWER(?)"
+    parameters = [registration_number]
+    if exclude_user_id is not None:
+        query += " AND id <> ?"
+        parameters.append(exclude_user_id)
+    return get_db().execute(query + " LIMIT 1", tuple(parameters)).fetchone() is not None
+
+
+def update_student_registration_number(user_id, registration_number):
+    """Set a student account's university ID."""
+    cursor = get_db().execute(
+        "UPDATE users SET registration_number = ? "
+        "WHERE id = ? AND role = 'USER' AND university_role = 'STUDENT'",
+        (registration_number, user_id),
+    )
+    get_db().commit()
+    return cursor.rowcount > 0
 
 
 def username_exists(username):
