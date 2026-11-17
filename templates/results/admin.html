@@ -4,6 +4,7 @@
 <section class="dashboard-page results-page">
   <div class="container">
     <div class="results-hero admin-hero"><div class="results-hero-copy"><span class="eyebrow">UNIVERSITY RESULTS · ADMINISTRATION</span><h1>Build your academic workspace</h1><p>Set up courses, connect verified teachers, and give students a clear path to their published results.</p><div class="admin-hero-actions"><a class="button button-primary" href="#course-setup">Create a course <span aria-hidden="true">→</span></a><a class="button button-hero-secondary" href="{{ url_for('admin_pending_users') }}">Review accounts</a></div></div><div class="results-hero-mark admin-mark" aria-hidden="true">A</div></div>
+    <div class="storage-notice"><span class="storage-notice-icon" aria-hidden="true">🔒</span><p><strong>Encrypted cloud records</strong><span>Managed database storage is encrypted. This free database expires on Dec 17, 2026; upgrade it before then to keep university records available.</span></p></div>
 
     <div class="admin-overview" aria-label="Academic setup overview">
       <article><span class="overview-icon">01</span><div><strong>{{ courses|length }}</strong><span>Courses created</span></div></article>
@@ -42,3 +43,4 @@
 </section>
 {% endblock %}
 {% block extra_js %}<script src="{{ url_for('static', filename='js/results.js') }}" defer></script>{% endblock %}
+
