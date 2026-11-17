@@ -1,4 +1,5 @@
 import os
+import json
 
 
 from flask import (
@@ -346,7 +347,8 @@ def user_register():
             role="USER",
             status="PENDING",
             face_path=face_result["face_path"],
-            university_role=university_role
+            university_role=university_role,
+            face_encoding=json.dumps(face_result["encoding"].tolist())
         )
 
         log_activity(
@@ -547,7 +549,8 @@ def user_login():
 
         face_result = verify_face(
             image_data=face_image,
-            registered_face_path=user["face_path"]
+            registered_face_path=user["face_path"],
+            registered_face_encoding=user["face_encoding"]
         )
 
     except NoFaceDetectedError:
@@ -929,7 +932,8 @@ def admin_register():
             password_hash=password_hash,
             role="ADMIN",
             status=status,
-            face_path=face_result["face_path"]
+            face_path=face_result["face_path"],
+            face_encoding=json.dumps(face_result["encoding"].tolist())
         )
 
         log_activity(
@@ -1143,7 +1147,8 @@ def admin_login():
 
         face_result = verify_face(
             image_data=face_image,
-            registered_face_path=admin["face_path"]
+            registered_face_path=admin["face_path"],
+            registered_face_encoding=admin["face_encoding"]
         )
 
         print("\n" + "=" * 70)
@@ -1705,3 +1710,4 @@ if __name__ == "__main__":
         port=5000,
         debug=True
     )
+

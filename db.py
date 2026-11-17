@@ -4,6 +4,46 @@ from datetime import datetime, timezone
 from flask import current_app, g
 
 
+class DatabaseHandle:
+    """Small SQLite/PostgreSQL adapter used by the request handlers."""
+
+    def __init__(self, connection, is_postgres=False):
+        self.connection = connection
+        self.is_postgres = is_postgres
+
+    def execute(self, statement, parameters=()):
+        if not self.is_postgres:
+            return self.connection.execute(statement, parameters)
+
+        sql = statement.strip()
+        if sql.upper() == "BEGIN":
+            # psycopg starts a transaction automatically on the first query.
+            return self.connection.cursor()
+
+        if sql.upper().startswith("INSERT OR IGNORE INTO "):
+            sql = sql.replace("INSERT OR IGNORE INTO ", "INSERT INTO ", 1)
+            if "ON CONFLICT" not in sql.upper():
+                sql = sql.rstrip("; ") + " ON CONFLICT DO NOTHING"
+
+        sql = sql.replace("COLLATE NOCASE", "")
+        sql = sql.replace("?", "%s")
+
+        from psycopg2.extras import DictCursor
+
+        cursor = self.connection.cursor(cursor_factory=DictCursor)
+        cursor.execute(sql, parameters)
+        return cursor
+
+    def commit(self):
+        return self.connection.commit()
+
+    def rollback(self):
+        return self.connection.rollback()
+
+    def close(self):
+        return self.connection.close()
+
+
 # ============================================================
 # DATABASE CONNECTION
 # ============================================================
@@ -14,15 +54,17 @@ def get_db():
     """
 
     if "db" not in g:
+        database_url = current_app.config.get("DATABASE_URL")
+        if database_url:
+            import psycopg2
 
-        g.db = sqlite3.connect(
-            current_app.config["DATABASE_PATH"]
-        )
-
-        g.db.row_factory = sqlite3.Row
-
-        # Enable foreign-key support.
-        g.db.execute("PRAGMA foreign_keys = ON")
+            connection = psycopg2.connect(database_url, sslmode="require")
+            g.db = DatabaseHandle(connection, is_postgres=True)
+        else:
+            connection = sqlite3.connect(current_app.config["DATABASE_PATH"])
+            connection.row_factory = sqlite3.Row
+            connection.execute("PRAGMA foreign_keys = ON")
+            g.db = DatabaseHandle(connection)
 
     return g.db
 
@@ -51,16 +93,17 @@ def init_db():
     """
 
     db = get_db()
+    id_column = "SERIAL PRIMARY KEY" if db.is_postgres else "INTEGER PRIMARY KEY AUTOINCREMENT"
 
     # ========================================================
     # USERS TABLE
     # ========================================================
 
     db.execute(
-        """
+        f"""
         CREATE TABLE IF NOT EXISTS users (
 
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id {id_column},
 
             username TEXT NOT NULL UNIQUE,
 
@@ -87,6 +130,8 @@ def init_db():
 
             face_path TEXT,
 
+            face_encoding TEXT,
+
             created_at TEXT NOT NULL,
 
             verified_at TEXT,
@@ -100,19 +145,28 @@ def init_db():
         """
     )
 
-    user_columns = {
-        row["name"] for row in db.execute("PRAGMA table_info(users)").fetchall()
-    }
+    if db.is_postgres:
+        user_columns = {
+            row["name"] for row in db.execute(
+                "SELECT column_name AS name FROM information_schema.columns WHERE table_name = 'users'"
+            ).fetchall()
+        }
+    else:
+        user_columns = {
+            row["name"] for row in db.execute("PRAGMA table_info(users)").fetchall()
+        }
     if "university_role" not in user_columns:
         db.execute(
             "ALTER TABLE users ADD COLUMN university_role TEXT NOT NULL DEFAULT 'STUDENT' "
             "CHECK (university_role IN ('STUDENT', 'TEACHER'))"
         )
+    if "face_encoding" not in user_columns:
+        db.execute("ALTER TABLE users ADD COLUMN face_encoding TEXT")
 
     db.execute(
-        """
+        f"""
         CREATE TABLE IF NOT EXISTS courses (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id {id_column},
             code TEXT NOT NULL UNIQUE,
             name TEXT NOT NULL,
             term TEXT NOT NULL,
@@ -136,9 +190,9 @@ def init_db():
         """
     )
     db.execute(
-        """
+        f"""
         CREATE TABLE IF NOT EXISTS results (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id {id_column},
             course_id INTEGER NOT NULL,
             student_id INTEGER NOT NULL,
             marks REAL NOT NULL,
@@ -152,15 +206,51 @@ def init_db():
         """
     )
 
+    db.execute(
+        f"""
+        CREATE TABLE IF NOT EXISTS attendance_sessions (
+            id {id_column},
+            course_id INTEGER NOT NULL,
+            session_date TEXT NOT NULL,
+            topic TEXT NOT NULL DEFAULT '',
+            created_by INTEGER NOT NULL,
+            created_at TEXT NOT NULL,
+            UNIQUE (course_id, session_date),
+            FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE,
+            FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE RESTRICT
+        )
+        """
+    )
+    db.execute(
+        f"""
+        CREATE TABLE IF NOT EXISTS attendance_records (
+            id {id_column},
+            session_id INTEGER NOT NULL,
+            course_id INTEGER NOT NULL,
+            student_id INTEGER NOT NULL,
+            status TEXT NOT NULL CHECK (status IN ('PRESENT', 'ABSENT', 'LATE', 'EXCUSED')),
+            note TEXT NOT NULL DEFAULT '',
+            marked_at TEXT NOT NULL,
+            UNIQUE (session_id, student_id),
+            FOREIGN KEY (session_id) REFERENCES attendance_sessions(id) ON DELETE CASCADE,
+            FOREIGN KEY (course_id, student_id)
+                REFERENCES enrollments(course_id, student_id) ON DELETE CASCADE
+        )
+        """
+    )
+    db.execute(
+        "CREATE INDEX IF NOT EXISTS attendance_records_student_idx ON attendance_records(student_id, course_id)"
+    )
+
     # ========================================================
     # ACTIVITY LOGS TABLE
     # ========================================================
 
     db.execute(
-        """
+        f"""
         CREATE TABLE IF NOT EXISTS activity_logs (
 
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id {id_column},
 
             user_id INTEGER,
 
@@ -189,12 +279,18 @@ def init_db():
     # CHECK EXISTING ACTIVITY_LOGS COLUMNS
     # ========================================================
 
-    existing_columns = {
-        row["name"]
-        for row in db.execute(
-            "PRAGMA table_info(activity_logs)"
-        ).fetchall()
-    }
+    if db.is_postgres:
+        existing_columns = {
+            row["name"] for row in db.execute(
+                "SELECT column_name AS name FROM information_schema.columns WHERE table_name = 'activity_logs'"
+            ).fetchall()
+        }
+    else:
+        existing_columns = {
+            row["name"] for row in db.execute(
+                "PRAGMA table_info(activity_logs)"
+            ).fetchall()
+        }
 
     # ========================================================
     # ADD MISSING COLUMNS
@@ -260,7 +356,8 @@ def create_user(
     role,
     status,
     face_path,
-    university_role="STUDENT"
+    university_role="STUDENT",
+    face_encoding=None,
 ):
     """
     Create a new user or administrator account.
@@ -269,7 +366,7 @@ def create_user(
     db = get_db()
 
     cursor = db.execute(
-        """
+        f"""
         INSERT INTO users (
             username,
             full_name,
@@ -278,9 +375,11 @@ def create_user(
             status,
             university_role,
             face_path,
+            face_encoding,
             created_at
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        {"RETURNING id" if db.is_postgres else ""}
         """,
         (
             username,
@@ -290,13 +389,17 @@ def create_user(
             status,
             university_role,
             face_path,
+            face_encoding,
             get_current_timestamp()
         )
     )
 
+    if db.is_postgres:
+        user_id = cursor.fetchone()["id"]
+    else:
+        user_id = cursor.lastrowid
     db.commit()
-
-    return cursor.lastrowid
+    return user_id
 
 
 def get_user_by_id(user_id):
@@ -327,7 +430,7 @@ def get_user_by_username(username):
         """
         SELECT *
         FROM users
-        WHERE username = ? COLLATE NOCASE
+        WHERE LOWER(username) = LOWER(?)
         """,
         (username,)
     ).fetchone()
@@ -344,7 +447,7 @@ def username_exists(username):
         """
         SELECT id
         FROM users
-        WHERE username = ? COLLATE NOCASE
+        WHERE LOWER(username) = LOWER(?)
         LIMIT 1
         """,
         (username,)
@@ -748,3 +851,4 @@ def reset_database():
     db.commit()
 
     init_db()
+

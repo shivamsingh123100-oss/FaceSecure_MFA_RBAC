@@ -1,4 +1,5 @@
 import base64
+import json
 import os
 import io
 import uuid
@@ -242,7 +243,7 @@ def process_registration_face(
         ↓
         face encoding
         ↓
-        image storage
+        encrypted-database template storage
     """
 
     image = decode_base64_image(
@@ -257,14 +258,9 @@ def process_registration_face(
         image_array
     )
 
-    face_path = save_face_image(
-        image,
-        username
-    )
-
     return {
         "encoding": encoding,
-        "face_path": face_path
+        "face_path": None
     }
 
 
@@ -342,7 +338,8 @@ def get_registered_face_encoding(
 def verify_face(
     image_data,
     registered_face_path,
-    tolerance=None
+    tolerance=None,
+    registered_face_encoding=None
 ):
     """
     Compare the captured face against the registered face.
@@ -393,7 +390,7 @@ def verify_face(
         # VALIDATE REGISTERED FACE
         # ====================================================
 
-        if not registered_face_path:
+        if registered_face_encoding is None and not registered_face_path:
 
             print("ERROR: Registered face path is empty.")
 
@@ -404,7 +401,7 @@ def verify_face(
                 "message": "No registered face is associated with this account."
             }
 
-        if not os.path.exists(registered_face_path):
+        if registered_face_encoding is None and not os.path.exists(registered_face_path):
 
             print(
                 "ERROR: Registered face does not exist:",
@@ -418,7 +415,10 @@ def verify_face(
                 "message": "Registered face image was not found."
             }
 
-        print("Registered face file exists: YES")
+        if registered_face_encoding is None:
+            print("Registered face file exists: YES")
+        else:
+            print("Registered face template exists: YES")
 
         # ====================================================
         # DECODE CAPTURED IMAGE
@@ -500,9 +500,20 @@ def verify_face(
 
         print("Loading registered face encoding...")
 
-        registered_encoding = get_registered_face_encoding(
-            registered_face_path
-        )
+        if registered_face_encoding is not None:
+            try:
+                encoding_values = (
+                    json.loads(registered_face_encoding)
+                    if isinstance(registered_face_encoding, str)
+                    else registered_face_encoding
+                )
+                registered_encoding = np.asarray(encoding_values, dtype=np.float64)
+                if registered_encoding.shape != (128,) or not np.isfinite(registered_encoding).all():
+                    raise ValueError("Invalid face template shape or values")
+            except Exception:
+                registered_encoding = None
+        else:
+            registered_encoding = get_registered_face_encoding(registered_face_path)
 
         if registered_encoding is None:
 
@@ -746,3 +757,4 @@ def calculate_face_distance(
     return float(
         distances[0]
     )
+

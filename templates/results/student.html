@@ -7,20 +7,26 @@
       <div class="results-hero-copy">
         <span class="eyebrow">STUDENT PORTAL</span>
         <h1>Your academic results</h1>
-        <p>Welcome back, {{ user["full_name"] }}. Your released grades are collected here in one secure place.</p>
+        <p>Welcome back, {{ user["full_name"] }}. Your released grades and course attendance are together in your secure record.</p>
       </div>
       <div class="results-hero-mark" aria-hidden="true">R</div>
     </div>
 
     <div class="student-actions-bar">
-      <div><span class="eyebrow">YOUR LEARNING SPACE</span><strong>Everything you need for your academic record.</strong></div>
-      <div class="student-action-buttons"><a href="{{ url_for('user_dashboard') }}" class="button button-hero-secondary">Account dashboard</a>{% if results %}<button type="button" class="button button-primary" data-download-results>Download results <span aria-hidden="true">↓</span></button><button type="button" class="button button-secondary" data-print-results>Print <span aria-hidden="true">↗</span></button>{% endif %}</div>
+      <div><span class="eyebrow">YOUR LEARNING SPACE</span><strong>Download or print your full academic report.</strong></div>
+      <div class="student-action-buttons"><a href="{{ url_for('user_dashboard') }}" class="button button-hero-secondary">Account dashboard</a><a href="{{ url_for('results.student_report_pdf') }}" class="button button-primary">Download report PDF <span aria-hidden="true">↓</span></a><button type="button" class="button button-secondary" data-print-results>Print this page <span aria-hidden="true">↗</span></button></div>
     </div>
+    <div class="storage-notice"><span class="storage-notice-icon" aria-hidden="true">🔒</span><p><strong>Encrypted cloud records</strong><span>Managed database storage is encrypted. This free database expires on Dec 17, 2026; upgrade it before then to keep your records available.</span></p></div>
 
     <div class="results-summary-grid student-summary-grid">
       <article class="results-summary-card"><span class="summary-icon">▤</span><div><span>Published results</span><strong>{{ results|length }} {{ 'course' if results|length == 1 else 'courses' }}</strong></div></article>
       <article class="results-summary-card"><span class="summary-icon summary-icon-green">✓</span><div><span>Enrolled courses</span><strong>{{ enrolled_count }} {{ 'course' if enrolled_count == 1 else 'courses' }}</strong></div></article>
       <article class="results-summary-card"><span class="summary-icon summary-icon-violet">◷</span><div><span>Awaiting release</span><strong>{{ waiting_count }} {{ 'result' if waiting_count == 1 else 'results' }}</strong></div></article>
+    </div>
+
+    <div class="content-card results-card attendance-summary-section">
+      <div class="card-header results-card-header"><div><span class="eyebrow">SUBJECT ATTENDANCE</span><h2>Your attendance overview</h2><p>Attendance rates exclude sessions marked excused. Your subject teacher manages each register.</p></div><span class="badge results-count">{{ attendance|length }} {{ 'course' if attendance|length == 1 else 'courses' }}</span></div>
+      {% if attendance %}<div class="student-attendance-grid">{% for item in attendance %}<article class="student-attendance-card"><div class="attendance-card-top"><span class="course-code-chip">{{ item["code"] }}</span><span class="attendance-rate-chip {{ 'attendance-rate-low' if item.rate is not none and item.rate < 75 else '' }}">{{ item.rate ~ '%' if item.rate is not none else 'No sessions yet' }}</span></div><h3>{{ item["name"] }}</h3><p>{{ item["term"] }}</p><div class="attendance-progress"><span style="width: {{ item.rate if item.rate is not none else 0 }}%"></span></div><div class="attendance-card-stats"><span><strong>{{ item.attended }}</strong> present / late</span><span><strong>{{ item.absent }}</strong> absent</span><span><strong>{{ item.excused }}</strong> excused</span></div></article>{% endfor %}</div>{% else %}<div class="analytics-empty"><span aria-hidden="true">◷</span><p>Course attendance will appear after your teacher records the first class.</p></div>{% endif %}
     </div>
 
     <div class="content-card results-card">
@@ -40,3 +46,4 @@
 </section>
 {% endblock %}
 {% block extra_js %}<script src="{{ url_for('static', filename='js/portal-actions.js') }}" defer></script>{% endblock %}
+

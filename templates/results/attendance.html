@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Attendance | {{ course["code"] }}{% endblock %}
+{% block content %}
+<section class="dashboard-page results-page attendance-page">
+  <div class="container">
+    <div class="results-hero attendance-hero">
+      <div class="results-hero-copy"><span class="eyebrow">COURSE ATTENDANCE</span><h1>{{ course["code"] }} <span class="hero-divider">/</span> {{ course["name"] }}</h1><p>Record attendance for the students enrolled in your assigned course. You can reopen a date to correct its register.</p></div>
+      <a class="button button-hero-secondary" href="{{ url_for('results.teacher_dashboard') }}"><span aria-hidden="true">←</span> Teaching insights</a>
+    </div>
+
+    <div class="attendance-layout">
+      <div class="content-card results-card attendance-main-card">
+        <div class="attendance-title-row"><div><span class="eyebrow">DAILY REGISTER</span><h2>Mark the class</h2><p>Present, late, absent, and excused entries are saved per subject and date.</p></div><span class="attendance-roster-count">{{ roster|length }} <small>students</small></span></div>
+        <form method="POST" class="attendance-form">
+          <input type="hidden" name="csrf_token" value="{{ results_csrf_token() }}">
+          <div class="attendance-session-fields">
+            <label>Class date<input type="date" name="session_date" value="{{ session_date }}" max="{{ today }}" required></label>
+            <label>Lesson or topic <span class="optional-label">optional</span><input type="text" name="topic" maxlength="120" value="{{ request.form.get('topic', '') if request.method == 'POST' else current_topic }}" placeholder="e.g. Introduction to cell biology"></label>
+          </div>
+          {% if roster %}
+            <div class="table-wrapper results-table-wrap"><table class="data-table results-table attendance-table"><thead><tr><th>Student</th><th>Attendance status</th><th>Note for this register</th></tr></thead><tbody>
+            {% for student in roster %}<tr><td><strong>{{ student["full_name"] }}</strong><span class="cell-subtitle">{{ student["username"] }}</span></td><td><label class="visually-hidden" for="status-{{ student['id'] }}">Attendance for {{ student["full_name"] }}</label><select id="status-{{ student['id'] }}" name="status_{{ student['id'] }}" required><option value="">Choose status</option>{% for option in ["PRESENT", "LATE", "ABSENT", "EXCUSED"] %}<option value="{{ option }}" {% if (request.form.get('status_' ~ student['id']) if request.method == 'POST' else student['status']) == option %}selected{% endif %}>{{ option|title }}</option>{% endfor %}</select></td><td><input class="attendance-note-input" type="text" name="note_{{ student['id'] }}" maxlength="240" value="{{ request.form.get('note_' ~ student['id'], student['note'] or '') if request.method == 'POST' else (student['note'] or '') }}" placeholder="Optional note"></td></tr>{% endfor %}
+            </tbody></table></div>
+            <div class="attendance-form-footer"><p>Excused sessions are excluded from the attendance percentage shown to students.</p><button type="submit" class="button button-primary">Save attendance <span aria-hidden="true">→</span></button></div>
+          {% else %}
+            <div class="empty-state results-empty"><div class="empty-icon">✓</div><h3>No students on this roster yet</h3><p>Ask your administrator to enroll students in this course before taking attendance.</p></div>
+          {% endif %}
+        </form>
+      </div>
+
+      <aside class="content-card results-card attendance-history-card">
+        <div class="card-header results-card-header"><div><span class="eyebrow">REGISTER HISTORY</span><h2>Recent class dates</h2><p>Select a date to review or update the attendance.</p></div></div>
+        {% if history %}<div class="attendance-history-list">{% for item in history %}<a class="attendance-history-item {{ 'attendance-history-current' if item['session_date'] == session_date else '' }}" href="{{ url_for('results.teacher_attendance', course_id=course['id'], session_date=item['session_date']) }}"><span class="history-date-mark">{{ item['session_date'][8:10] }}</span><span class="history-copy"><strong>{{ item["session_date"] }}</strong><small>{{ item["topic"] or "Class session" }}</small></span><span class="history-attendance">{{ item["attended_count"] or 0 }}/{{ item["marked_count"] }}</span></a>{% endfor %}</div>{% else %}<div class="analytics-empty"><span aria-hidden="true">◷</span><p>Saved attendance dates will show here.</p></div>{% endif %}
+      </aside>
+    </div>
+  </div>
+</section>
+{% endblock %}
+

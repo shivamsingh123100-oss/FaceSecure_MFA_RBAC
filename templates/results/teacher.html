@@ -4,19 +4,41 @@
 <section class="dashboard-page results-page">
   <div class="container">
     <div class="results-hero teacher-hero">
-      <div class="results-hero-copy"><span class="eyebrow">TEACHER PORTAL</span><h1>Good to see you, {{ user["full_name"] }}</h1><p>Keep your classes organized and release grades to students when you are ready.</p></div>
+      <div class="results-hero-copy"><span class="eyebrow">TEACHER PORTAL</span><h1>Good to see you, {{ user["full_name"] }}</h1><p>Take attendance, manage marks, and spot where your students could use extra support.</p></div>
       <div class="results-hero-mark" aria-hidden="true">T</div>
     </div>
-    <div class="content-card results-card">
-      <div class="card-header results-card-header"><div><span class="eyebrow">YOUR TEACHING</span><h2>Assigned courses</h2><p>Open a gradebook to enter or publish marks.</p></div><span class="badge results-count">{{ courses|length }} {{ 'course' if courses|length == 1 else 'courses' }}</span></div>
-      {% if courses %}
-        <div class="table-wrapper results-table-wrap"><table class="data-table results-table"><thead><tr><th>Course</th><th>Term</th><th>Students</th><th>Maximum mark</th><th>Gradebook</th></tr></thead><tbody>
-        {% for course in courses %}<tr><td><strong>{{ course["code"] }}</strong><span class="cell-subtitle">{{ course["name"] }}</span></td><td>{{ course["term"] }}</td><td><span class="student-count">{{ course["student_count"] }}</span></td><td>Out of {{ "%.1f"|format(course["max_marks"]) }}</td><td><a class="table-action results-open-link" href="{{ url_for('results.teacher_course', course_id=course['id']) }}">Open gradebook <span aria-hidden="true">→</span></a></td></tr>{% endfor %}
-        </tbody></table></div>
-      {% else %}
-        <div class="empty-state results-empty"><div class="empty-icon">T</div><h3>No courses assigned yet</h3><p>Your administrator can assign courses after verifying your teacher account.</p></div>
-      {% endif %}
-    </div>
+    <div class="storage-notice"><span class="storage-notice-icon" aria-hidden="true">🔒</span><p><strong>Encrypted cloud records</strong><span>Managed database storage is encrypted. This free database expires on Dec 17, 2026; upgrade it before then to keep your records available.</span></p></div>
+
+    <div class="analytics-heading"><div><span class="eyebrow">TEACHING INSIGHTS</span><h2>Class performance</h2><p>Use marks and attendance together to choose a helpful next step for each student.</p></div><span class="badge results-count">{{ analyses|length }} {{ 'class' if analyses|length == 1 else 'classes' }}</span></div>
+    {% if analyses %}
+      <div class="teacher-analysis-list">
+      {% for analysis in analyses %}
+        <article class="content-card results-card teacher-analysis-card">
+          <div class="analysis-card-heading">
+            <div><span class="eyebrow">{{ analysis.course["term"] }}</span><h3>{{ analysis.course["code"] }} <span>·</span> {{ analysis.course["name"] }}</h3><p>{{ analysis.course["student_count"] }} {{ 'student' if analysis.course["student_count"] == 1 else 'students' }} enrolled · Marks out of {{ "%.1f"|format(analysis.course["max_marks"]) }}</p></div>
+            <div class="analysis-actions"><a class="button button-secondary" href="{{ url_for('results.teacher_attendance', course_id=analysis.course['id']) }}">Take attendance</a><a class="button button-primary" href="{{ url_for('results.teacher_course', course_id=analysis.course['id']) }}">Open gradebook</a></div>
+          </div>
+          <div class="analysis-metrics">
+            <div><span>Class average</span><strong>{{ analysis.average ~ '%' if analysis.average is not none else '—' }}</strong></div>
+            <div><span>Passing students</span><strong>{{ analysis.pass_rate ~ '%' if analysis.pass_rate is not none else '—' }}</strong></div>
+            <div><span>Average attendance</span><strong>{{ analysis.attendance_average ~ '%' if analysis.attendance_average is not none else '—' }}</strong></div>
+            <div class="metric-attention"><span>Needs a check-in</span><strong>{{ analysis.support_count }}</strong></div>
+          </div>
+          {% if analysis.students %}
+            <div class="analysis-roster-heading"><div><h4>Student support view</h4><p>Students below 60% in marks or below 75% attendance are highlighted.</p></div><span>{{ analysis.graded_count }} graded</span></div>
+            <div class="table-wrapper results-table-wrap"><table class="data-table results-table analysis-table"><thead><tr><th>Student</th><th>Marks</th><th>Attendance</th><th>Suggested next step</th></tr></thead><tbody>
+            {% for student in analysis.students %}<tr class="{{ 'needs-support-row' if student.needs_support else '' }}"><td><strong>{{ student.name }}</strong><span class="cell-subtitle">{{ student.username }}</span></td><td>{% if student.mark_rate is not none %}<span class="analysis-score {{ 'analysis-score-low' if student.mark_rate < 60 else '' }}">{{ student.mark_rate }}%</span>{% else %}<span class="status-pill status-empty">No marks yet</span>{% endif %}</td><td>{% if student.attendance_rate is not none %}<span class="analysis-score {{ 'analysis-score-low' if student.attendance_rate < 75 else '' }}">{{ student.attendance_rate }}%</span>{% else %}<span class="status-pill status-empty">No attendance yet</span>{% endif %}</td><td><span class="suggestion-text">{{ student.suggestion }}</span>{% if student.needs_support %}<span class="support-tag">Check in</span>{% endif %}</td></tr>{% endfor %}
+            </tbody></table></div>
+          {% else %}
+            <div class="analytics-empty"><span aria-hidden="true">✦</span><p>Student insights will appear after learners are enrolled in this course.</p></div>
+          {% endif %}
+        </article>
+      {% endfor %}
+      </div>
+    {% else %}
+      <div class="content-card results-card"><div class="empty-state results-empty"><div class="empty-icon">T</div><h3>No courses assigned yet</h3><p>Your administrator can assign courses after verifying your teacher account.</p></div></div>
+    {% endif %}
   </div>
 </section>
 {% endblock %}
+

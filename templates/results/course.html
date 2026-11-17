@@ -3,7 +3,7 @@
 {% block content %}
 <section class="dashboard-page results-page">
   <div class="container">
-    <div class="results-hero gradebook-hero"><div class="results-hero-copy"><span class="eyebrow">TEACHER GRADEBOOK</span><h1>{{ course["code"] }} <span class="hero-divider">/</span> {{ course["name"] }}</h1><p>{{ course["term"] }} · Marks are out of {{ "%.1f"|format(course["max_marks"]) }}. Save a draft as you work, then publish when every mark is ready.</p></div><a class="button button-hero-secondary" href="{{ url_for('results.teacher_dashboard') }}"><span aria-hidden="true">←</span> My courses</a></div>
+    <div class="results-hero gradebook-hero"><div class="results-hero-copy"><span class="eyebrow">TEACHER GRADEBOOK</span><h1>{{ course["code"] }} <span class="hero-divider">/</span> {{ course["name"] }}</h1><p>{{ course["term"] }} · Marks are out of {{ "%.1f"|format(course["max_marks"]) }}. Save a draft as you work, then publish when every mark is ready.</p></div><div class="gradebook-hero-actions"><a class="button button-hero-secondary" href="{{ url_for('results.teacher_attendance', course_id=course['id']) }}">Attendance register</a><a class="button button-hero-secondary" href="{{ url_for('results.teacher_dashboard') }}"><span aria-hidden="true">←</span> My courses</a></div></div>
 
     <div class="gradebook-toolbar"><div><span class="eyebrow">CLASS ROSTER</span><h2>Enter student marks</h2><p>Drafts are private to you. Published results appear in each student's portal.</p></div><div class="gradebook-stats"><span><strong>{{ roster|length }}</strong> {{ 'student' if roster|length == 1 else 'students' }}</span><span><strong>{{ "%.1f"|format(course["max_marks"]) }}</strong> max marks</span></div></div>
 
@@ -17,3 +17,4 @@
 </section>
 {% endblock %}
 {% block extra_js %}<script src="{{ url_for('static', filename='js/results.js') }}" defer></script>{% endblock %}
+
