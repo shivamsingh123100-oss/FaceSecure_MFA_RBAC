@@ -68,6 +68,7 @@ Manage Users | FaceSecure
                         <tr>
                             <th>Name</th>
                             <th>Username</th>
+                            <th>Student registration no.</th>
                             <th>Role</th>
                             <th>Status</th>
                             <th>Action</th>
@@ -89,6 +90,20 @@ Manage Users | FaceSecure
 
                             <td>
                                 {{ item["username"] }}
+                            </td>
+
+                            <td>
+                                {% if item["role"] == "USER" and item["university_role"] == "STUDENT" %}
+                                    <form method="POST" action="{{ url_for('admin_users') }}" class="student-id-admin-form">
+                                        <input type="hidden" name="csrf_token" value="{{ admin_csrf_token() }}">
+                                        <input type="hidden" name="user_id" value="{{ item['id'] }}">
+                                        <label class="visually-hidden" for="student-id-{{ item['id'] }}">Registration number for {{ item['full_name'] }}</label>
+                                        <input type="text" id="student-id-{{ item['id'] }}" name="registration_number" value="{{ item['registration_number'] or '' }}" placeholder="Assign student ID" minlength="3" maxlength="32" pattern="[A-Za-z0-9][A-Za-z0-9/_-]{2,31}" required>
+                                        <button type="submit" class="button button-secondary button-small">Save ID</button>
+                                    </form>
+                                {% else %}
+                                    <span class="cell-subtitle">—</span>
+                                {% endif %}
                             </td>
 
                             <td>
