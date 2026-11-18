@@ -487,23 +487,34 @@ def student_report_pdf():
         Paragraph("ACADEMIC PERFORMANCE REPORT · CONFIDENTIAL", ParagraphStyle("ReportLabel", parent=small_style, alignment=TA_CENTER, textColor=palette["blue"])),
         Spacer(1, 16),
     ]
+    identity_label_style = ParagraphStyle(
+        "ReportIdentityLabel",
+        parent=small_style,
+        textColor=palette["navy"],
+        fontName="Helvetica-Bold",
+    )
+    identity_value_style = ParagraphStyle(
+        "ReportIdentityValue",
+        parent=styles["Normal"],
+        fontSize=9,
+        leading=12,
+        splitLongWords=1,
+    )
     identity = [
-        ["Student", escape(str(user["full_name"])), "Registration no.", escape(str(user["registration_number"] or "Not assigned"))],
-        ["Generated", datetime.now(timezone.utc).strftime("%d %b %Y, %H:%M UTC"), "Courses", str(len(courses))],
+        [Paragraph("Student", identity_label_style), Paragraph(escape(str(user["full_name"])), identity_value_style)],
+        [Paragraph("Registration number", identity_label_style), Paragraph(escape(str(user["registration_number"] or "Not assigned")), identity_value_style)],
+        [Paragraph("Generated", identity_label_style), Paragraph(datetime.now(timezone.utc).strftime("%d %b %Y, %H:%M UTC"), identity_value_style)],
+        [Paragraph("Courses", identity_label_style), Paragraph(str(len(courses)), identity_value_style)],
     ]
-    identity_table = Table(identity, colWidths=[.85 * inch, 2.35 * inch, .85 * inch, 2.4 * inch])
+    identity_table = Table(identity, colWidths=[1.8 * inch, 5.2 * inch])
     identity_table.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (0, -1), palette["light"]),
-        ("BACKGROUND", (2, 0), (2, -1), palette["light"]),
-        ("TEXTCOLOR", (0, 0), (0, -1), palette["navy"]),
-        ("TEXTCOLOR", (2, 0), (2, -1), palette["navy"]),
-        ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"),
-        ("FONTNAME", (2, 0), (2, -1), "Helvetica-Bold"),
         ("GRID", (0, 0), (-1, -1), .5, palette["line"]),
-        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-        ("FONTSIZE", (0, 0), (-1, -1), 9),
-        ("TOPPADDING", (0, 0), (-1, -1), 9),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 9),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 9),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 9),
+        ("TOPPADDING", (0, 0), (-1, -1), 8),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
     ]))
     story.extend([identity_table, Paragraph("Course results", section_style)])
     grade_rows = [["Course", "Term", "Score", "Grade", "Status"]]
